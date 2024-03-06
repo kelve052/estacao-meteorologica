@@ -1,7 +1,8 @@
 # ESTACOES METERIOLOGICAS REQUISITOS
 
 ## Requisitos Funcionais Obrigatórios
-| IDENTIFICADOR | NOME | REGRA DE NEGOCIO |:---|:---|:---|
+| IDENTIFICADOR | NOME | REGRA DE NEGOCIO |
+|:---:|:---:|:---:|
 
 |RF-001 | Cadastro DE Usuário| O sistema deve permitir o cadastro de novos usuarios incluindo informações como e-mail, nome e senha. |
 
