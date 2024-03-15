@@ -2,8 +2,9 @@
 
 ## *Stakeholders*
 |NOME|CARGO|E-MAIL|
-|:José Lucas|:Professor|:---|
-|:Roberto Simplício|:Professor|:---|
+|:---|:---|:---|
+|José Lucas|Professor||
+|Roberto Simplício|Professor||
 
 
 # Sumário
@@ -16,17 +17,12 @@
 * [USUÁRIOS DO SISTEMA](#usuários-do-sistema)
 * [ABRANGÊNCIA E SISTEMAS SIMILARES](#abrangência-e-sistemas-similares)
 * [SUPOSIÇÕES E DEPENDÊNCIAS](#suposições-e-dependências)
-* [ESTUDO DE VIABILIDADE](#estudo-de-viabilidade)
 * [METODOLOGIA ADOTADA NO DESENVOLVIMENTO](#metodologia-adotada-no-desenvolvimento)
-* [REQUISITOS DO SOFTWARE](#requisitos-do-software)
-* [REQUISITOS FUNCIONAIS](#requisitos-funcionais)
-* [REQUISITOS NÃO FUNCIONAIS](#requisitos-não-funcionais)
 * [PROTOTIPAGEM](#prototipagem)
-* [DIAGRAMA DE CASOS DE USO](#diagrama-de-casos-de-uso)
-* [ESPECIFICAÇÃO DOS CASOS DE USO](#descrição--especificação-dos-casos-de-uso)
-* [DIAGRAMA DE CLASSES](#diagrama-de-classes)
-* [DIAGRAMA DE SEQUÊNCIAS](#diagrama-de-sequências)
-* [ DIAGRAMA DE ATIVIDADES](#diagrama-de-atividades)
+* [DIAGRAMA DE CASO DE USO](#diagrama-de-casos-de-uso)
+* [DIAGRAMA DE CLASSE](#diagrama-de-classes)
+* [DIAGRAMA DE SEQUÊNCIA](#diagrama-de-sequências)
+* [ DIAGRAMA DE ATIVIDADE](#diagrama-de-atividades)
 * [REFERÊNCIAS](#referências)
 
 
@@ -56,7 +52,7 @@ Métodos utilizados para a obtenção dos requisitos do sistema:
 * Observação do cenário;
 * Product Backlog.
 
-## Usuários do sistema
+## USUÁRIOS DO SISTEMA
 |USUÁRIO|DESCRIÇÃO|
 |:---|:---|
 |**Agricultor:**|Utiliza as informações meteorológicas do sistema para tomar decisões relacionadas à agricultura, como plantio, colheita, irrigação e aplicação de defensivos agrícolas. As previsões meteorológicas ajudam os agricultores a planejar suas atividades de acordo com as condições climáticas esperadas.|
@@ -67,13 +63,14 @@ Métodos utilizados para a obtenção dos requisitos do sistema:
 |**Gestor de Emergências:**|Utiliza as informações meteorológicas para monitorar condições climáticas adversas, como tempestades, furacões, incêndios florestais e enchentes. Os gestores de emergência usam esses dados para alertar o público, coordenar evacuações e tomar medidas de resposta rápida em situações de crise.|
 |**Entusiasta do Clima:**|Pessoas interessadas em meteorologia que utilizam o sistema para acompanhar as condições meteorológicas locais e globais, observar padrões climáticos e participar da comunidade de observadores meteorológicos amadores. Esses usuários podem incluir hobbyistas, estudantes e educadores interessados em ciências atmosféricas.|
 
-### Sistemas similares:
+### SISTEMAS SIMILARES:
+
 |SISTEMAS SIMILIARES|
-|Laboratório Bridge. (https://portal.bridge.ufsc.br/)|
-|Sidia Instituto de Ciência e Tecnologia. (https://sidia.com/)|
+|Instituto Nacional de Meteorologia. (https://portal.inmet.gov.br/)|
+|World Weather Information Service. (https://worldweather.wmo.int/en/home.html)|
 
 
-## Suposições e dependências
+## SUPOSIÇÕES E DEPENDÊNCIAS
 
 Os clientes devem utilizar um computador com a seguinte configuração mínima:
 
@@ -82,7 +79,7 @@ Os clientes devem utilizar um computador com a seguinte configuração mínima:
 * 5Gb de armazenamento em disco;
 * Para uso do sistema é preciso ter instalado o Java para Web browsers.
 
-# Metodologia Adotada no Desenvolvimento
+# METODOLOGIA ADOTADA NO DESENVOLVIMENTO
 
 ### Scrum
 
@@ -106,24 +103,24 @@ O Scrum é uma metodologia ágil de gerenciamento de projetos, amplamente utiliz
 
 - Retrospectiva da Sprint: Uma reflexão sobre o processo de trabalho da sprint, identificando pontos fortes e oportunidades de melhoria.
 
-# Prototipagem
+# PROTOTIPAGEM
 
 <img src='/' alt='Página Home'/>
 
 
-# Diagrama de Casos de Uso
+# DIAGRAMA DE CASO DE USO
 
 <img src='' alt='Diagrama de caso de uso'>
 
-# Diagrama de Classes
+# DIAGRAMA DE CLASSE
 
 <img src='' alt='Diagrama de classe'>
 
-# Diagrama de Sequências
+# DIAGRAMA DE SEQUÊNCIA
 
 <img src='' alt='Diagrama de sequencia'>
 
-# Diagrama de Atividades
+# DIAGRAMA DE ATIVIDADE
 
 <img src='/Imagens/' alt='Diagrama de atividade'>
 
@@ -131,4 +128,3 @@ O Scrum é uma metodologia ágil de gerenciamento de projetos, amplamente utiliz
 
 Esta subseção apresenta as referências aos documentos que utilizamos no auxílio à construção deste documento.
 * [UML](https://www.omg.org/spec/UML/2.5/About-UML/)
-* [Práticas para Especificação de Requisitos IEEE-830](https://ieeexplore.ieee.org/document/720574)
