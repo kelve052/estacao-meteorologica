@@ -18,7 +18,6 @@
 * [ABRANGÊNCIA E SISTEMAS SIMILARES](#abrangência-e-sistemas-similares)
 * [SUPOSIÇÕES E DEPENDÊNCIAS](#suposições-e-dependências)
 * [METODOLOGIA ADOTADA NO DESENVOLVIMENTO](#metodologia-adotada-no-desenvolvimento)
-* [PROTOTIPAGEM](#prototipagem)
 * [DIAGRAMA DE CASO DE USO](#diagrama-de-casos-de-uso)
 * [DIAGRAMA DE CLASSE](#diagrama-de-classes)
 * [DIAGRAMA DE SEQUÊNCIA](#diagrama-de-sequências)
@@ -103,26 +102,23 @@ O Scrum é uma metodologia ágil de gerenciamento de projetos, amplamente utiliz
 
 - Retrospectiva da Sprint: Uma reflexão sobre o processo de trabalho da sprint, identificando pontos fortes e oportunidades de melhoria.
 
-# PROTOTIPAGEM
-
-<img src='/' alt='Página Home'/>
-
-
 # DIAGRAMA DE CASO DE USO
 
-<img src='' alt='Diagrama de caso de uso'>
+![Diagrama de caso de uso](<imagens_diagramas/diagrama_caso_de_uso.jpeg>)
 
 # DIAGRAMA DE CLASSE
 
-<img src='' alt='Diagrama de classe'>
+![Diagrama de classe](<imagens_diagramas/diagrama_de_classe.jpeg>)
 
 # DIAGRAMA DE SEQUÊNCIA
 
-<img src='' alt='Diagrama de sequencia'>
+![Diagrama de sequência 1](<imagens_diagramas/diagrama_sequencia_1.jpeg>)
+![Diagrama de sequência 2](<imagens_diagramas/diagrama_sequencia_2.jpeg>)
 
 # DIAGRAMA DE ATIVIDADE
 
-<img src='/Imagens/' alt='Diagrama de atividade'>
+![Diagrama de atividade 1](<imagens_diagramas/diagrama_atividade_1.jpeg>)
+![Diagrama de atividade 2](<imagens_diagramas/diagrama_atividade_2.jpeg>)
 
 # REFERÊNCIAS
 
