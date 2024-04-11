@@ -1,5 +1,6 @@
 # servidor
 PORT=7001
+JWT_SECRET="Auth"
 
 # banco de dados
 DATABASE_URL="mysql://fslab:fslab@edurondon.tplinkdns.com:3321/db_Estacao_Meteriologica"
