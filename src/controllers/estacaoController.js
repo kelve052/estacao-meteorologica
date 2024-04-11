@@ -21,7 +21,7 @@ class Estacao {
     }
   }
 
-  //rota kamila cadastrar estacao
+  //rota kamila Cadastrar Estacao
 
   static cadastrarEstacao = async (req, res) => {
     try {
@@ -47,6 +47,9 @@ class Estacao {
       if (!status) {
         erros.push({ error: true, code: 400, message: "Status não informado: " })
       }
+      if(!usuario_id){
+        erros.push({ error: true, code: 400, message: "Usuario_id não informado: " })
+      }
 
       // verificar se o nome da estação já está cadastrado
       const userExists = await prisma.users.findFirst({
@@ -56,6 +59,7 @@ class Estacao {
           }
         },
       });
+
 
 
 
