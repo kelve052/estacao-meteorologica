@@ -7,39 +7,52 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Clientes {
-  id       Int       @id @default(autoincrement())
-  nome     String?   @db.VarChar(100)
-  email    String?   @db.VarChar(100)
-  telefone String?   @db.VarChar(20)
-  Pedidos  Pedidos[]
+model dados_diarios {
+  id                     Int     @id @default(autoincrement())
+  temp_media             String? @db.VarChar(45)
+  temp_max               String? @db.VarChar(45)
+  temp_min               String? @db.VarChar(45)
+  hora_temp_max          String? @db.VarChar(45)
+  hora_temp_min          String? @db.VarChar(45)
+  um_media               String? @db.VarChar(45)
+  um_max                 String? @db.VarChar(45)
+  um_min                 String? @db.VarChar(45)
+  hora_um_max            String? @db.VarChar(45)
+  hora_um_min            String? @db.VarChar(45)
+  pluviosidade           String? @db.VarChar(45)
+  velocidade_vento_media String? @db.VarChar(45)
+  velocidade_vento_max   String? @db.VarChar(45)
+  velocidade_vento_min   String? @db.VarChar(45)
+  hora_velo_vento_max    String? @db.VarChar(45)
+  hora_velo_vento_min    String? @db.VarChar(45)
+  direcao_vento          String? @db.VarChar(45)
+  hora_direcao_vento     String? @db.VarChar(45)
+  estacao_id             Int
+  estacao                estacao @relation(fields: [estacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_dados_diarios_estacao1")
+
+  @@index([estacao_id], map: "fk_dados_diarios_estacao1_idx")
 }
 
-model ItensPedido {
-  id         Int       @id @default(autoincrement())
-  pedido_id  Int?
-  produto_id Int?
-  quantidade Int?
-  Pedidos    Pedidos?  @relation(fields: [pedido_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ItensPedido_ibfk_1")
-  Produtos   Produtos? @relation(fields: [produto_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ItensPedido_ibfk_2")
+model estacao {
+  id            Int             @id @default(autoincrement())
+  nome          String?         @db.VarChar(45)
+  endereco      String?         @db.VarChar(45)
+  latitude      String?         @db.VarChar(45)
+  longitude     String?         @db.VarChar(45)
+  ip            String?         @db.VarChar(45)
+  status        String?         @db.VarChar(45)
+  usuario_id    Int
+  dados_diarios dados_diarios[]
+  usuario       usuario         @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_estacao_usuario")
 
-  @@index([pedido_id], map: "pedido_id")
-  @@index([produto_id], map: "produto_id")
+  @@index([usuario_id], map: "fk_estacao_usuario_idx")
 }
 
-model Pedidos {
-  id          Int           @id @default(autoincrement())
-  cliente_id  Int?
-  data_pedido DateTime?     @db.Date
-  ItensPedido ItensPedido[]
-  Clientes    Clientes?     @relation(fields: [cliente_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Pedidos_ibfk_1")
-
-  @@index([cliente_id], map: "cliente_id")
-}
-
-model Produtos {
-  id          Int           @id @default(autoincrement())
-  nome        String?       @db.VarChar(100)
-  pre_o       Decimal?      @map("preço") @db.Decimal(10, 2)
-  ItensPedido ItensPedido[]
+model usuario {
+  id      Int       @id @default(autoincrement())
+  nome    String?   @db.VarChar(45)
+  email   String?   @db.VarChar(45)
+  senha   String?   @db.VarChar(45)
+  foto    String?   @db.VarChar(45)
+  estacao estacao[]
 }
