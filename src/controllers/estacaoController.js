@@ -47,7 +47,7 @@ class Estacao {
       if (!status) {
         erros.push({ error: true, code: 400, message: "Status não informado: " })
       }
-      if(!usuario_id){
+      if (!usuario_id) {
         erros.push({ error: true, code: 400, message: "Usuario_id não informado: " })
       }
 
@@ -59,7 +59,6 @@ class Estacao {
           }
         },
       });
-
 
 
 

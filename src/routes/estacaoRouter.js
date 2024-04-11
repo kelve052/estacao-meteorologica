@@ -6,4 +6,5 @@ const router = express.Router();
 router.get('/estacoes', Estacao.listar);
 router.get('/estacoes/:id', Estacao.listar);
 
+
 export default router;
