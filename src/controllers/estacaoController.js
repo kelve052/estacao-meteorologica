@@ -48,6 +48,16 @@ class Estacao {
         erros.push({ error: true, code: 400, message: "Status não informado: " })
       }
 
+      // verificar se o nome da estação já está cadastrado
+      const userExists = await prisma.users.findFirst({
+        where: {
+          name: {
+            equals: req.body.name,
+          }
+        },
+      });
+
+
 
     } catch (error) {
       console.log(error);
