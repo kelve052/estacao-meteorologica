@@ -51,8 +51,17 @@ class Estacao {
         erros.push({ error: true, code: 400, message: "Usuario_id não informado: " })
       }
 
+      // Verificar se o usuario_id existe no banco
+    const userExists = await prisma.users.findFirst({
+      where: {
+        id: {
+          equals: usuario_id,
+        }
+      }
+    });
+
       // verificar se o nome da estação já está cadastrado
-      const userExists = await prisma.users.findFirst({
+      const userNameExists = await prisma.users.findFirst({
         where: {
           name: {
             equals: req.body.name,
@@ -60,7 +69,20 @@ class Estacao {
         },
       });
 
+      //verificar se nome ja estiver cadastrado retornar erro 
+      if (userNameExists) {
+        erros.push({ error: true, code: 400, message: "Nome já cadastrado" });
+      }
+      if (erros.length > 0) {
+        return res.status(400).json(erros);
+      }
 
+      const dados = { nome, endereco, latitude, longitude, ip, status, usuario_id }
+
+      const inserir = await prisma.estacao.create({
+        data: { nome: nome, endereco: endereco, latitude: latitude, longitude: longitude, ip: ip, status: status, usuario_id: usuario_id }
+      })
+      res.status(200).json({ mensagem: inserir });
 
 
     } catch (error) {
@@ -68,8 +90,6 @@ class Estacao {
       res.status(400).json({ messagemErro: error.message });
     }
   };
-
-
 }
 
 export default Estacao;
