@@ -52,30 +52,29 @@ class Estacao {
       }
 
       // Verificar se o usuario_id existe no banco
-    const userExists = await prisma.users.findFirst({
-      where: {
-        id: {
-          equals: usuario_id,
-        }
-      }
-    });
+      const user = await prisma.usuario.findFirst({
+        where: {
+          id: usuario_id,
+        },
+      });
+  
 
      // Verificar se o usuário existe
-     if (!userExists) {
+     if (!user) {
       erros.push({ error: true, code: 404, message: "Usuário não encontrado" });
     }
 
       // verificar se o nome da estação já está cadastrado
-      const userNameExists = await prisma.users.findFirst({
+      const userNameExists = await prisma.estacao.findFirst({
         where: {
-          name: {
-            equals: req.body.name,
+          nome: {
+            equals: req.body.nome, 
           }
         },
       });
-
+      
       //verificar se nome ja estiver cadastrado retornar erro 
-      if (userNameExists) {
+      if (userNameExists) { 
         erros.push({ error: true, code: 400, message: "Nome já cadastrado" });
       }
       if (erros.length > 0) {

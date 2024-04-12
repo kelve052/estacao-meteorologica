@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.get('/estacoes', Estacao.listar);
 router.get('/estacoes/:id', Estacao.listar);
+router.post('/cadastrarEstacao', Estacao.cadastrarEstacao)
 
 
 export default router;
