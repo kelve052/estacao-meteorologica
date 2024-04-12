@@ -1,11 +1,40 @@
 import Jwt from "jsonwebtoken";
+import { prisma } from "../configs/prismaClient.js";
 
 class Autenticacao{
-    login = async (req, res)=>{
+    static login = async (req, res)=>{
+
+      const errors = []
         try {
-          const {email, password} = req.body
-          await new ServicesAuth().servValidadeCredentials(email, password)
-          const token = Jwt.sign({email, password}, process.env.JWT_SECRET, {expiresIn: '30d'})
+          const {email, senha} = req.body
+
+          if(!email){
+            errors.push('Campo email vasio')
+          }
+
+          const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          const validarEmail = regex.test(email);
+
+          if(!validarEmail){
+            errors.push('Email invaido!')
+          }
+
+          if(!senha){
+            errors.push('Campo senha vasio')
+          }
+
+          if(errors.length != 0){
+            throw Error()
+          }
+
+          const usuario  = await prisma.usuario.findFirst({
+            where:{
+              email: email
+            }
+          })
+
+          await new ServicesAuth().servValidadeCredentials(email, senha)
+          const token = Jwt.sign({email, senha}, process.env.JWT_SECRET, {expiresIn: '30d'})
 
           res.status(201).json({ 
             error: false, 
@@ -17,7 +46,7 @@ class Autenticacao{
             res.status(400).json({
                 error: false, 
                 code: 400,
-                message: error.message,
+                message: errors,
         })
       }
       
