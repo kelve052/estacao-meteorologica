@@ -60,6 +60,11 @@ class Estacao {
       }
     });
 
+     // Verificar se o usuário existe
+     if (!userExists) {
+      erros.push({ error: true, code: 404, message: "Usuário não encontrado" });
+    }
+
       // verificar se o nome da estação já está cadastrado
       const userNameExists = await prisma.users.findFirst({
         where: {
