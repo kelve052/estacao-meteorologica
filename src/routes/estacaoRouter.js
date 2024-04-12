@@ -4,6 +4,6 @@ import Estacao from '../controllers/estacaoController.js';
 const router = express.Router();
 
 router.get('/estacoes', Estacao.listar);
-router.get('/estacoes/:id', Estacao.listar);
+router.get('/estacoes/:id', Estacao.listarPorID);
 
 export default router;
