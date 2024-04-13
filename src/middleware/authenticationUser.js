@@ -14,7 +14,6 @@ const authentication = (req, res, next)=>{
       res.status(401).json({Error: "Incorret Token"})
     }
   }
-  next()
 }
 
 export default authentication;
