@@ -26,73 +26,79 @@ class Estacao {
   static cadastrarEstacao = async (req, res) => {
     try {
       const { nome, endereco, latitude, longitude, ip, status, usuario_id } = req.body;
-
       const erros = [];
 
       if (!nome) {
-        erros.push({ error: true, code: 400, message: "Nome não informado: " })
+        erros.push({ error: true, code: 400, message: "Nome não informado" });
       }
       if (!endereco) {
-        erros.push({ error: true, code: 400, message: "Endereço não informado: " })
+        erros.push({ error: true, code: 400, message: "Endereço não informado" });
       }
       if (!latitude) {
-        erros.push({ error: true, code: 400, message: "Latitude não informado: " })
+        erros.push({ error: true, code: 400, message: "Latitude não informada" });
       }
       if (!longitude) {
-        erros.push({ error: true, code: 400, message: "Longitude não informado: " })
+        erros.push({ error: true, code: 400, message: "Longitude não informada" });
       }
       if (!ip) {
-        erros.push({ error: true, code: 400, message: "Ip não informado: " })
+        erros.push({ error: true, code: 400, message: "IP não informado" });
       }
       if (!status) {
-        erros.push({ error: true, code: 400, message: "Status não informado: " })
+        erros.push({ error: true, code: 400, message: "Status não informado" });
       }
       if (!usuario_id) {
-        erros.push({ error: true, code: 400, message: "Usuario_id não informado: " })
+        erros.push({ error: true, code: 400, message: "ID do usuário não informado" });
       }
-
-      // Verificar se o usuario_id existe no banco
+  
+      if (erros.length > 0) {
+        return res.status(400).json(erros);
+      }
+  
+      // Verificar se o usuário existe
       const user = await prisma.usuario.findFirst({
         where: {
           id: usuario_id,
         },
       });
   
-
-     // Verificar se o usuário existe
-     if (!user) {
-      erros.push({ error: true, code: 404, message: "Usuário não encontrado" });
-    }
-
-      // verificar se o nome da estação já está cadastrado
-      const userNameExists = await prisma.estacao.findFirst({
+      if (!user) {
+        return res.status(404).json({
+          message: "Usuário não encontrado",
+          code: 404,
+          error: true,
+        });
+      }
+  
+      // Verificar se o nome da estação já está cadastrado
+      const stationNameExists = await prisma.estacao.findFirst({
         where: {
           nome: {
-            equals: req.body.nome, 
+            equals: req.body.nome,
           }
         },
       });
-      
-      //verificar se nome ja estiver cadastrado retornar erro 
-      if (userNameExists) { 
-        erros.push({ error: true, code: 400, message: "Nome já cadastrado" });
+  
+      // Verificar se nome já está cadastrado
+      if (stationNameExists) {
+        return res.status(400).json({ error: true, code: 400, message: "Nome já cadastrado" });
       }
-      if (erros.length > 0) {
-        return res.status(400).json(erros);
-      }
-
-      const dados = { nome, endereco, latitude, longitude, ip, status, usuario_id }
-
       const inserir = await prisma.estacao.create({
-        data: { nome: nome, endereco: endereco, latitude: latitude, longitude: longitude, ip: ip, status: status, usuario_id: usuario_id }
-      })
+        data: {
+          nome: nome,
+          endereco: endereco,
+          latitude: latitude,
+          longitude: longitude,
+          ip: ip,
+          status: status,
+          usuario_id: usuario_id
+        }
+      });
+  
       res.status(200).json({ mensagem: inserir });
-
     } catch (error) {
       console.log(error);
-      res.status(400).json({ messagemErro: error.message });
+      res.status(400).json({ mensagemErro: error.message });
     }
-  };
+  }; 
 }
-
 export default Estacao;
