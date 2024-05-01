@@ -50,9 +50,7 @@ model estacao {
 
 model usuario {
   id      Int       @id @default(autoincrement())
-  nome    String?   @db.VarChar(45)
   email   String?   @db.VarChar(45)
   senha   String?   @db.VarChar(45)
-  foto    String?   @db.VarChar(45)
   estacao estacao[]
 }
