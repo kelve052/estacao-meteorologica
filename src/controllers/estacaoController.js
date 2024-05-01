@@ -97,9 +97,10 @@ class Estacao {
         }
       });
   
-      return res.status(200).json({
-        message: inserir,
-        code: 200,
+      return res.status(201).json({
+        data: inserir,
+        message: 'estação cadastrada com sucesso!',
+        code: 201,
         error: false
       });
       } catch (error) {
