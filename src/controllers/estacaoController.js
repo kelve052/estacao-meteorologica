@@ -105,7 +105,11 @@ class Estacao {
       });
       } catch (error) {
       console.log(error);
-      res.status(400).json({ mensagemErro: error.message });
+      return res.status(400).json({
+        message: error.message,
+        code: 400,
+        error: true,
+      });
     }
   }; 
 }
