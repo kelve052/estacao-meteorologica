@@ -59,7 +59,7 @@ class Estacao {
 
 
 
-}
+
 
   //rota kamila Cadastrar Estacao
 
@@ -92,7 +92,7 @@ class Estacao {
   
       if (erros.length > 0) {
         return res.status(400).json({
-          message: "Dados inválidos",
+          message: erros,
           code: 400,
           error: true,
         });
