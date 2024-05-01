@@ -51,7 +51,11 @@ class Estacao {
       }
   
       if (erros.length > 0) {
-        return res.status(400).json(erros);
+        return res.status(400).json({
+          message: "Dados inválidos",
+          code: 400,
+          error: true,
+        });
       }
   
       // Verificar se o usuário existe
@@ -78,7 +82,6 @@ class Estacao {
         },
       });
   
-      // Verificar se nome já está cadastrado
       if (stationNameExists) {
         return res.status(400).json({ error: true, code: 400, message: "Nome já cadastrado" });
       }
@@ -94,8 +97,12 @@ class Estacao {
         }
       });
   
-      res.status(200).json({ mensagem: inserir });
-    } catch (error) {
+      return res.status(200).json({
+        message: inserir,
+        code: 200,
+        error: false
+      });
+      } catch (error) {
       console.log(error);
       res.status(400).json({ mensagemErro: error.message });
     }
