@@ -8,49 +8,51 @@ datasource db {
 }
 
 model dados_diarios {
-  id                     Int     @id @default(autoincrement())
-  temp_media             String? @db.VarChar(45)
-  temp_max               String? @db.VarChar(45)
-  temp_min               String? @db.VarChar(45)
-  hora_temp_max          String? @db.VarChar(45)
-  hora_temp_min          String? @db.VarChar(45)
-  um_media               String? @db.VarChar(45)
-  um_max                 String? @db.VarChar(45)
-  um_min                 String? @db.VarChar(45)
-  hora_um_max            String? @db.VarChar(45)
-  hora_um_min            String? @db.VarChar(45)
-  pluviosidade           String? @db.VarChar(45)
-  velocidade_vento_media String? @db.VarChar(45)
-  velocidade_vento_max   String? @db.VarChar(45)
-  velocidade_vento_min   String? @db.VarChar(45)
-  hora_velo_vento_max    String? @db.VarChar(45)
-  hora_velo_vento_min    String? @db.VarChar(45)
-  direcao_vento          String? @db.VarChar(45)
-  hora_direcao_vento     String? @db.VarChar(45)
-  estacao_id             Int
-  estacao                estacao @relation(fields: [estacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_dados_diarios_estacao1")
+  id                     Int      @id @default(autoincrement())
+  temp_media             String?  @db.VarChar(45)
+  temp_max               String?  @db.VarChar(45)
+  temp_min               String?  @db.VarChar(45)
+  hora_temp_max          String?  @db.VarChar(45)
+  hora_temp_min          String?  @db.VarChar(45)
+  um_media               String?  @db.VarChar(45)
+  um_max                 String?  @db.VarChar(45)
+  um_min                 String?  @db.VarChar(45)
+  hora_um_max            String?  @db.VarChar(45)
+  hora_um_min            String?  @db.VarChar(45)
+  pluviosidade           String?  @db.VarChar(45)
+  velocidade_vento_media String?  @db.VarChar(45)
+  velocidade_vento_max   String?  @db.VarChar(45)
+  velocidade_vento_min   String?  @db.VarChar(45)
+  hora_velo_vento_max    String?  @db.VarChar(45)
+  hora_velo_vento_min    String?  @db.VarChar(45)
+  direcao_vento          String?  @db.VarChar(45)
+  hora_direcao_vento     String?  @db.VarChar(45)
+  estacao_id             Int?
+  estacao                estacao? @relation(fields: [estacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_dados_diarios_estacao1")
 
-  @@index([estacao_id], map: "fk_dados_diarios_estacao1_idx")
+  @@index([estacao_id], map: "fk_dados_diarios_estacao_idx")
 }
 
 model estacao {
   id            Int             @id @default(autoincrement())
   nome          String?         @db.VarChar(45)
   endereco      String?         @db.VarChar(45)
-  latitude      String?         @db.VarChar(45)
-  longitude     String?         @db.VarChar(45)
+  latitude      Float?
+  longitude     Float?
   ip            String?         @db.VarChar(45)
   status        String?         @db.VarChar(45)
-  usuario_id    Int
+  usuario_id    Int?
   dados_diarios dados_diarios[]
-  usuario       usuario         @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_estacao_usuario")
+  usuario       usuario?        @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_estacao_usuario")
 
   @@index([usuario_id], map: "fk_estacao_usuario_idx")
 }
 
 model usuario {
   id      Int       @id @default(autoincrement())
-  email   String?   @db.VarChar(45)
-  senha   String?   @db.VarChar(45)
+  nome    String?   @db.VarChar(50)
+  idade   Int?
+  email   String?   @db.VarChar(100)
+  senha   String    @db.VarChar(255)
   estacao estacao[]
 }

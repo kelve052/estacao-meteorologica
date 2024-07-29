@@ -152,5 +152,44 @@ class Estacao {
       });
     }
   }; 
+
+  static deletarEstacao = async (req, res) => {
+    const { id } = req.params;
+    const intId = parseInt(id);
+    try {
+        const EstacaoById = await prisma.estacao.findUnique({
+            where: {
+                id: intId
+            }
+        })
+        if (!EstacaoById) {
+            res.status(400).json({
+                error: true,
+                code: 400,
+                message: "Estação não encontrada."
+            });
+            return;
+        }else{
+          const deleteEstacao = await prisma.estacao.delete({
+            where: {
+                id: intId
+            },
+        });
+        res.status(200).json({
+          error: false, 
+          code: 201,
+          message: 'Estação deletada com sucesso!',
+        });
+        }
+
+    } catch (error) {
+        res.status(400).json({
+            error: true,
+            code: 400,
+            message: error.message
+        });
+    }
+}
+
 }
 export default Estacao;

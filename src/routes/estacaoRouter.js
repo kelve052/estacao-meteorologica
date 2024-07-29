@@ -6,6 +6,6 @@ const router = express.Router();
 router.get('/estacoes', autenticacaoUser, Estacao.listar);
 router.get('/estacoes/:id', Estacao.listarPorID);
 router.post('/cadastrarEstacao', Estacao.cadastrarEstacao)
-
+router.delete('/deletarEstacao/:id', Estacao.deletarEstacao);
 
 export default router;
