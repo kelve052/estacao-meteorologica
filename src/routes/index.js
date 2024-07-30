@@ -1,6 +1,7 @@
 import express from "express";
 //import exemplo from "./exemploRouter.js";
 import estacoes from "./estacaoRouter.js"
+import usuarioRouter from "./usuarioRouter.js";
 import autenticacao from "./autenticacaoRouter.js";
 
 
@@ -12,7 +13,8 @@ const routes = (app) => {
     app.use(    
         express.json(),
         estacoes,
-        autenticacao
+        autenticacao,
+        usuarioRouter
         // rota apenas para teste
         //demais rotas a serem criadas
     )
