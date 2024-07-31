@@ -1,31 +1,32 @@
-const request = require('supertest');
-const urlBase = 'http://localhost:7001'; 
+import request from "supertest";
+import { expect } from "@jest/globals";
+import app from "../../app.js";
 
 
 it('Deve cadastrar uma estação com dados válidos', async () => {
-  const response = await request(urlBase)
+  const response = await request(app)
     .post('/cadastrarEstacao')
     .send({
-      nome: 'estacao av melvin jones',
-      endereco: 'av melvin jones',
-      latitude: '123.454',
-      longitude: '456.784',
-      ip: '192.168.0.2',
+      nome: 'av. ',
+      endereco: 'Ifro - Campus Vilhena/RO',
+      latitude: 23.55052,
+      longitude: -46.633309,
+      ip: '192.168.0.12',
       status: 'ativo',
-      usuario_id: 2
+      usuario_id: 6
     });
 
-  expect(response.status).toBe(400);
+  expect(response.status).toBe(201);
 });
 
 it('Deve retornar erro ao cadastrar uma estação com usuário_id inválido', async () => {
-  const response = await request(urlBase)
+  const response = await request(app)
     .post('/cadastrarEstacao')
     .send({
       nome: 'estacao av parana',
       endereco: 'av parana n3020',
-      latitude: '123.456',
-      longitude: '456.789',
+      latitude: 123.456,
+      longitude: 456.789,
       ip: '192.168.0.1',
       status: 'ativo',
       usuario_id: 999
@@ -36,16 +37,16 @@ it('Deve retornar erro ao cadastrar uma estação com usuário_id inválido', as
 });
 
 it('Deve retornar erro ao cadastrar uma estação com nome já existente', async () => {
-  const response = await request(urlBase)
+  const response = await request(app)
     .post('/cadastrarEstacao')
     .send({
-      nome: 'estacao kamila', 
+      nome: 'Estação Atualizada 2.0', 
       endereco: 'av melvin jones',
-      latitude: '123.454',
-      longitude: '456.784',
+      latitude: 23.454,
+      longitude: 456.784,
       ip: '192.168.0.2',
       status: 'ativo',
-      usuario_id: 2
+      usuario_id: 6
     });
 
   expect(response.status).toBe(400);
