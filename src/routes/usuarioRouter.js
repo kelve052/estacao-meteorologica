@@ -5,5 +5,6 @@ import Usuario from "../controllers/usuarioController.js";
 const router = express.Router()
 
 router.delete('/usuarios/:id', autenticacaoUser, Usuario.deletar);
+router.post('/usuarios', Usuario.criarUsuario);
 
 export default router;
