@@ -245,4 +245,5 @@ class Estacao {
 }
 
 }
+
 export default Estacao;
