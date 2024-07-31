@@ -37,8 +37,8 @@ model estacao {
   id            Int             @id @default(autoincrement())
   nome          String?         @db.VarChar(45)
   endereco      String?         @db.VarChar(45)
-  latitude      String?         @db.VarChar(45)
-  longitude     String?         @db.VarChar(45)
+  latitude      Float?
+  longitude     Float?
   ip            String?         @db.VarChar(45)
   status        String?         @db.VarChar(45)
   usuario_id    Int?
