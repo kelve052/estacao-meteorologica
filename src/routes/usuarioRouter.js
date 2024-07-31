@@ -1,11 +1,11 @@
-import express from 'express';
+import express from "express";
 import autenticacaoUser from '../middleware/authenticationUser.js'
-import Usuario from '../controllers/usuarioControler.js';
+import Usuario from "../controllers/usuarioController.js";
 
+const router = express.Router()
 
-const router = express.Router();
-router.post('/usuario', Usuario.criarUsuario)
-router.patch('/usuario/:id', Usuario.editarUsuario)
-
+router.post('/usuarios', Usuario.criarUsuario);
+router.patch('/usuario/:id', autenticacaoUser, Usuario.editarUsuario)
+router.delete('/usuarios/:id', autenticacaoUser, Usuario.deletar);
 
 export default router;
