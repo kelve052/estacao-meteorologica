@@ -60,3 +60,15 @@ it('Atualização dos dados de uma estação - dados vazios', async () => {
     expect(response.body.code).toBe(400);
     expect(response.body.error).toBe(true);
 });
+it('Listagem das estações', async () => {
+    const estacao = await prisma.estacao.findMany()
+    const response = await request(app)
+        .get("/estacoes")
+        .set("Authorization", `Bearer ${token}`)
+        .set("Content-Type", "application/json")
+
+    const lista = response.body.response
+
+    expect(response.status).toBe(200)
+    expect(response.body.response).toBeInstanceOf(Array)
+});
