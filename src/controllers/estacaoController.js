@@ -30,38 +30,91 @@ class Estacao {
         },
         select: {
           id: true,
-          nome: true,    
-          endereco: true,  
+          nome: true,
+          endereco: true,
           latitude: true,
           longitude: true,
           ip: true,
-          status: true,       
-          usuario_id: true,     
+          status: true,
+          usuario_id: true,
         }
-        }
+      }
       );
       if (!estacao) {
         throw new Error("Estação não encontrada");
       }
-      res.status(200).json([{           
+      res.status(200).json([{
         message: "Estação encontrada com sucesso",
         code: 200,
-        error:false,
-        data: estacao}])
+        error: false,
+        data: estacao
+      }])
     } catch (err) {
       console.error(err);
-      res.status(400).json([{           
-      message: err.message,
-      code: 400,
-      error:true }])
+      res.status(400).json([{
+        message: err.message,
+        code: 400,
+        error: true
+      }])
     }
   }
 
+  static editarEstacao = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const intId = parseInt(id)
+      const estacaoById = await prisma.estacao.findUnique({
+        where: {
+          id: intId
+        }
+      });
+      if (!estacaoById) {
+        return res.status(400).json({
+          message: "Estação não encontrada.",
+          code: 400,
+          error: true,
+        });
+      }
+      for (const value in req.body) {
+        if (!req.body[value]) {
+          return res.status(400).json({
+            message: `Campo ${value} não específicado.`,
+            code: 400,
+            error: true,
+          });
+        }
+      }
+      const estacaoAtualizada = await prisma.estacao.update({
+        where: {
+          id: intId
+        },
+        data: {
+          nome: req.body.nome,
+          endereco: req.body.endereco,
+          latitude: req.body.latitude,
+          longitude: req.body.longitude,
+          ip: req.body.ip,
+          status: req.body.status,
+          usuario_id: req.body.usuario_id,
+          dados_diarios: req.body.dados_diarios,
+          usuario: req.body.usuario,
+        }
+      });
+      res.status(200).json({
+        message: "Estação atualizada com sucesso.",
+        error: false,
+        code: 200,
+        data: estacaoAtualizada,
+      });
+    } catch (error) {
+      return res.status(400).json({
+        message: error.message,
+        code: 400,
+        error: true,
+      });
+    }
 
-
-
-
-  //rota kamila Cadastrar Estacao
+  }
 
   static cadastrarEstacao = async (req, res) => {
     try {
@@ -89,7 +142,7 @@ class Estacao {
       if (!usuario_id) {
         erros.push({ error: true, code: 400, message: "ID do usuário não informado" });
       }
-  
+
       if (erros.length > 0) {
         return res.status(400).json({
           message: erros,
@@ -97,14 +150,14 @@ class Estacao {
           error: true,
         });
       }
-  
+
       // Verificar se o usuário existe
       const user = await prisma.usuario.findFirst({
         where: {
           id: usuario_id,
         },
       });
-  
+
       if (!user) {
         return res.status(404).json({
           message: "Usuário não encontrado",
@@ -112,7 +165,7 @@ class Estacao {
           error: true,
         });
       }
-  
+
       // Verificar se o nome da estação já está cadastrado
       const stationNameExists = await prisma.estacao.findFirst({
         where: {
@@ -121,7 +174,7 @@ class Estacao {
           }
         },
       });
-  
+
       if (stationNameExists) {
         return res.status(400).json({ error: true, code: 400, message: "Nome já cadastrado" });
       }
@@ -136,14 +189,14 @@ class Estacao {
           usuario_id: usuario_id
         }
       });
-  
+
       return res.status(201).json({
         data: inserir,
         message: 'estação cadastrada com sucesso!',
         code: 201,
         error: false
       });
-      } catch (error) {
+    } catch (error) {
       console.log(error);
       return res.status(400).json({
         message: error.message,
@@ -152,5 +205,44 @@ class Estacao {
       });
     }
   }; 
+
+  static deletarEstacao = async (req, res) => {
+    const { id } = req.params;
+    const intId = parseInt(id);
+    try {
+        const EstacaoById = await prisma.estacao.findUnique({
+            where: {
+                id: intId
+            }
+        })
+        if (!EstacaoById) {
+            res.status(400).json({
+                error: true,
+                code: 400,
+                message: "Estação não encontrada."
+            });
+            return;
+        }else{
+          const deleteEstacao = await prisma.estacao.delete({
+            where: {
+                id: intId
+            },
+        });
+        res.status(200).json({
+          error: false, 
+          code: 201,
+          message: 'Estação deletada com sucesso!',
+        });
+        }
+
+    } catch (error) {
+        res.status(400).json({
+            error: true,
+            code: 400,
+            message: error.message
+        });
+    }
+}
+
 }
 export default Estacao;
