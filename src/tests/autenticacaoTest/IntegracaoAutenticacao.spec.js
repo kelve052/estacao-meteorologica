@@ -3,7 +3,7 @@ import { expect } from "@jest/globals";
 import app from "../../app.js";
 
 
-it('Login com autenticação jwt', async () => {
+it('Testando a criação do Token', async () => {
   const response = await request(app)
     .post("/autenticacao")
     .send({
