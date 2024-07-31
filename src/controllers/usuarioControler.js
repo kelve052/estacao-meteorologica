@@ -70,5 +70,61 @@ class Usuario{
       });
     }
   }; 
+
+
+  static editarUsuario = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const intId = parseInt(id)
+      const usuarioById = await prisma.usuario.findUnique({
+        where: {
+          id: intId
+        }
+      });
+      if (!usuarioById) {
+        return res.status(400).json({
+          message: "Usuario não encontrado.",
+          code: 400,
+          error: true,
+        });
+      }
+      for (const value in req.body) {
+        if (!req.body[value]) {
+          return res.status(400).json({
+            message: `Campo ${value} não específicado.`,
+            code: 400,
+            error: true,
+          });
+        }
+      }
+      const usuarioAtualizado = await prisma.usuario.update({
+        where: {
+          id: intId
+        },
+        data: {
+          nome: req.body.nome,
+          idade: req.body.idade,
+          email: req.body.email,
+          senha: req.body.senha
+        
+        }
+      });
+      res.status(200).json({
+        message: "Usuario atualizado com sucesso!!!",
+        error: false,
+        code: 200,
+        data: usuarioAtualizado,
+      });
+    } catch (error) {
+      return res.status(400).json({
+        message: error.message,
+        code: 400,
+        error: true,
+      });
+    }
+
 }
-export default Usuario;
+
+
+}export default Usuario;
+
