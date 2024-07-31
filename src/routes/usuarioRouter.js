@@ -4,7 +4,7 @@ import Usuario from "../controllers/usuarioController.js";
 
 const router = express.Router()
 
-router.post('/usuarios', Usuario.criarUsuario);
+router.post('/usuarios', Usuario.cadastrar);
 router.patch('/usuario/:id', autenticacaoUser, Usuario.editarUsuario)
 router.delete('/usuarios/:id', autenticacaoUser, Usuario.deletar);
 
