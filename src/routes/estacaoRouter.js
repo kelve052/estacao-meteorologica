@@ -3,10 +3,10 @@ import Estacao from '../controllers/estacaoController.js';
 import autenticacaoUser from '../middleware/authenticationUser.js'
 
 const router = express.Router();
-router.get('/estacoes', autenticacaoUser, Estacao.listar);
-router.get('/estacoes/:id', Estacao.listarPorID);
-router.patch('/estacoes/:id', Estacao.editarEstacao);
-router.post('/cadastrarEstacao', Estacao.cadastrarEstacao)
-router.delete('/deletarEstacao/:id', Estacao.deletarEstacao);
+router.get('/estacoes', Estacao.listar);
+router.get('/estacoes/:id', Estacao.listarPorId);
+router.patch('/estacoes/:id', autenticacaoUser, Estacao.atualizar);
+router.post('/estacoes', autenticacaoUser, Estacao.cadastrar)
+router.delete('/estacoes/:id', autenticacaoUser, Estacao.deletar);
 
 export default router;
