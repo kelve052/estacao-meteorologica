@@ -5,7 +5,9 @@ class estacaoService {
         // Regra de negócio e validações
         return await estacaoRepository.findAll(filtro);
     }
-    
+    static async listarPorID(id) {
+      return await estacaoRepository.findById(id);
+    }
     static async inserir(data) {
         // Regra de negócio e validações
         return await estacaoRepository.create(data);
@@ -17,7 +19,10 @@ class estacaoService {
     }
 
     static async deletar(id) {
-        // Regra de negócio e validações
+      const estacaoExists = await estacaoRepository.findById(id);
+      if (!estacaoExists) {
+        throw new Error('Estação não encontrada');
+      }
         return await estacaoRepository.delete(id);
     }
 }

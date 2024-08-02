@@ -4,7 +4,9 @@ class estacaoRepository {
     static async findMany(filtros) {
         return await prisma.estacao.findMany(filtros);
     }
-
+    static async findById(id) {
+      return await prisma.estacao.findUnique({ where: { id } });
+    }
     static async create(data) {
         return await prisma.estacao.create({ data });
     }
