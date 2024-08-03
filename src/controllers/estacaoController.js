@@ -1,5 +1,6 @@
 import env from "dotenv";
 import { prisma } from "../configs/prismaClient.js";
+import estacaoService from "../services/estacaoService.js";
 
 
 env.config();
@@ -8,8 +9,23 @@ class Estacao {
 
   static listar = async (req, res) => {
     try {
-      const response = await prisma.estacao.findMany()
-      res.status(200).json({ response: response })
+      const { id, nome, endereco, latitude, longitude, ip, status, usuario_id } = req.query;
+
+      const filtro = {
+        id: id,
+        nome: nome,
+        endereco: endereco,
+        latitude: latitude,
+        longitude: longitude,
+        ip: ip,
+        status: status,
+        usuario_id: usuario_id
+      }
+
+      const response = await estacaoService.listar(filtro)
+
+      res.json({response})
+
     } catch (error) {
       res.status(400).json({
         error: true,
