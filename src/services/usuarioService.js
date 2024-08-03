@@ -1,4 +1,5 @@
 import usuarioRepository from "../repositories/usuarioRepository.js";
+import { z } from "zod";
 
 class usuarioService {
     static async listar(filtro) {

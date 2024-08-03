@@ -1,4 +1,5 @@
 import estacaoRepository from "../repositories/estacaoRepository.js";
+import { z } from "zod";
 
 class estacaoService {
     static async listar(filtro) {
