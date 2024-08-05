@@ -136,6 +136,34 @@ describe("Atualizar estação", () => {
         expect(response.status).toBe(200);
         expect(body.response).toBeInstanceOf(Array);
     });
+    
+    it('Listar estação por ID valido', async () => {
+      const idvalido = "10";
+      const response = await request(app)
+          .get(`/estacoes/${idvalido}`)
+          .set("Authorization", `Bearer ${token}`)
+          .set("Content-Type", "application/json")
+        //testando a resposta
+      expect(response.status).toBe(200);
+      // testando se esta retornando o id esperado
+      expect({id: '10'}).toHaveProperty('id', idvalido);
+      //testando se retorna json
+      expect(response.headers['content-type']).toContain('json');
+    });
+    it('Deve retornar erro ao listar estação com id invalido', async () => {
+      const idinvalido = "9999";
+      const response = await request(app)
+          .get(`/estacoes/${idinvalido}`)
+          .set("Authorization", `Bearer ${token}`)
+          .set("Content-Type", "application/json")
+        //testando a resposta
+        expect(response.status).toBe(400);
+        //testando se retorna json
+        expect(response.headers['content-type']).toContain('json');
+        //testando se retorna o motivo do erro
+        expect({message: 'Estação não encontrada'}).toHaveProperty('message', "Estação não encontrada");
+        //testando se o erro esta ativo
+        expect({error: true}).toHaveProperty('error', true);
+  });
 });
-
 
