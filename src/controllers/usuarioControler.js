@@ -22,7 +22,7 @@ class Usuario{
         erros.push({ error: true, code: 400, message: "senha não informada" });
       }
       
-  
+      
       if (erros.length > 0) {
         return res.status(400).json({
           message: erros,
@@ -72,6 +72,8 @@ class Usuario{
   }; 
 
 
+  
+
   static editarUsuario = async (req, res) => {
     try {
       const { id } = req.params;
@@ -108,6 +110,7 @@ class Usuario{
           senha: req.body.senha
         
         }
+    
       });
       res.status(200).json({
         message: "Usuario atualizado com sucesso!!!",
