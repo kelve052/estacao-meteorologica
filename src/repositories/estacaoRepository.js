@@ -6,7 +6,7 @@ class estacaoRepository {
     }
 
     static async create(data) {
-        return await prisma.estacao.create({ data });
+        return await prisma.estacao.create({ data: data });
     }
 
     static async update(id, data) {

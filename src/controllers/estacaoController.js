@@ -1,5 +1,6 @@
 import env from "dotenv";
 import { prisma } from "../configs/prismaClient.js";
+import estacaoService from "../services/estacaoService.js";
 
 
 env.config();
@@ -120,26 +121,14 @@ class Estacao {
       const { nome, endereco, latitude, longitude, ip, status, usuario_id } = req.body;
       const erros = [];
 
-      if (!nome) {
-        erros.push({ error: true, code: 400, message: "Nome não informado" });
-      }
-      if (!endereco) {
-        erros.push({ error: true, code: 400, message: "Endereço não informado" });
-      }
-      if (!latitude) {
-        erros.push({ error: true, code: 400, message: "Latitude não informada" });
-      }
-      if (!longitude) {
-        erros.push({ error: true, code: 400, message: "Longitude não informada" });
-      }
-      if (!ip) {
-        erros.push({ error: true, code: 400, message: "IP não informado" });
-      }
-      if (!status) {
-        erros.push({ error: true, code: 400, message: "Status não informado" });
-      }
-      if (!usuario_id) {
-        erros.push({ error: true, code: 400, message: "ID do usuário não informado" });
+      const data = {
+        nome: nome,
+        endereco: endereco,
+        latitude: latitude,
+        longitude: longitude,
+        ip: ip,
+        status: status,
+        usuario_id: usuario_id
       }
 
       if (erros.length > 0) {
@@ -151,47 +140,38 @@ class Estacao {
       }
 
       // Verificar se o usuário existe
-      const user = await prisma.usuario.findFirst({
-        where: {
-          id: usuario_id,
-        },
-      });
+      // const user = await prisma.usuario.findFirst({
+      //   where: {
+      //     id: usuario_id,
+      //   },
+      // });
 
-      if (!user) {
-        return res.status(400).json({
-          message: "Usuário não encontrado",
-          code: 400,
-          error: true,
-        });
-      }
+      // if (!user) {
+      //   return res.status(400).json({
+      //     message: "Usuário não encontrado",
+      //     code: 400,
+      //     error: true,
+      //   });
+      // }
 
-      // Verificar se o nome da estação já está cadastrado
-      const stationNameExists = await prisma.estacao.findFirst({
-        where: {
-          nome: {
-            equals: req.body.nome,
-          }
-        },
-      });
+      // // Verificar se o nome da estação já está cadastrado
+      // const stationNameExists = await prisma.estacao.findFirst({
+      //   where: {
+      //     nome: {
+      //       equals: req.body.nome,
+      //     }
+      //   },
+      // });
 
-      if (stationNameExists) {
-        return res.status(400).json({ error: true, code: 400, message: "Nome já cadastrado" });
-      }
-      const inserir = await prisma.estacao.create({
-        data: {
-          nome: nome,
-          endereco: endereco,
-          latitude: latitude,
-          longitude: longitude,
-          ip: ip,
-          status: status,
-          usuario_id: usuario_id
-        }
-      });
+      // if (stationNameExists) {
+      //   return res.status(400).json({ error: true, code: 400, message: "Nome já cadastrado" });
+      // }
+
+      const response = await estacaoService.inserir(data);
 
       return res.status(201).json({
-        data: inserir,
-        message: 'estação cadastrada com sucesso!',
+        data: response,
+        message: 'Estação cadastrada com sucesso!',
         code: 201,
         error: false
       });
