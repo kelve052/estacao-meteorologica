@@ -9,15 +9,25 @@ class Estacao {
 
   static listar = async (req, res) => {
     try {
-      const response = await prisma.estacao.findMany()
-      res.status(200).json({ response: response })
-    } catch (error) {
-      res.status(400).json({
-        error: true,
-        code: 400,
-        message: error.message
+      const { id, nome, endereco, latitude, longitude, ip, status, usuario_id } = req.query;
+
+      const filtro = {
+        id: id,
+        nome: nome,
+        endereco: endereco,
+        latitude: latitude,
+        longitude: longitude,
+        ip: ip,
+        status: status,
+        usuario_id: usuario_id
       }
-      )
+
+      const response = await estacaoService.listar(filtro)
+
+      res.status(200).json(response)
+
+    } catch (error) {
+      res.status(error.code).json(error)
     }
   }
   // GET por ID - listar Usuario por ID 
