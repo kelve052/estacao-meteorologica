@@ -1,7 +1,6 @@
 import express from "express";
 //import exemplo from "./exemploRouter.js";
 import estacoes from "./estacaoRouter.js"
-import usuarioRouter from "./usuarioRouter.js";
 import autenticacao from "./autenticacaoRouter.js";
 import usuarios from "./usuarioRouter.js";
 
