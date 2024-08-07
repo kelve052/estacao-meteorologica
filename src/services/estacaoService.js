@@ -11,28 +11,41 @@ class estacaoService {
     static async inserir(data) {
         try {
             const estacaoSchema = z.object({
-                nome: z.string(),
-                endereco: z.string(),
+                nome: z.string({
+                    invalid_type_error: "O nome informado não é do tipo string",
+                    required_error: "Nome é obrigatório",
+                }),
+                endereco: z.string({
+                    invalid_type_error: "O email informado não é do tipo string",
+                    required_error: "Email é obrigatório",
+                }),
                 latitude: z.preprocess((val) => Number(val), z.number()),
                 longitude: z.preprocess((val) => Number(val), z.number()),
-                ip: z.string().ip(),
+                ip: z.string({
+                    invalid_type_error: "O IP informado não é do tipo string",
+                    required_error: "IP é obrigatório",
+                }).ip({
+                    message: "O formato deste IP não é válido"
+                }),
                 status: z.enum(['ativo', 'inativo']),
-                usuario_id: z.preprocess((val) => Number(val), z.number().int().positive())
+                usuario_id: z.number({
+                    required_error: "Estação sem vínculo com usuário",
+                    invalid_type_error: "ID não é do tipo number"
+                }).int({
+                    message: "ID não é um tipo inteiro"
+                }).positive()
             });
-            const estacaoRequired = estacaoSchema.required();
-            const estacaoValidated = estacaoRequired.parse(data)
-    
+            const estacaoValidated = estacaoSchema.parse(data)
             const filtro = { id: estacaoValidated.usuario_id};
-
             const usuario = await usuarioRepository.findMany(filtro);
-
-            console.log(usuario.length);
-    
-            if (!usuario) throw new Error("Usuário não encontrado");
-    
-            // return await estacaoRepository.create(estacaoValidated);
+            if (usuario.length === 0) throw new Error("Usuário não encontrado");
         } catch (error) {
-            return error
+            if (error instanceof z.ZodError) {
+                const errorMessages = error.issues.map(issue => issue.message);
+                throw errorMessages;
+            } else {
+                throw error;
+            }
         }
     }
 
