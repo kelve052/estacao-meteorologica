@@ -8,33 +8,21 @@ datasource db {
 }
 
 model dados_diarios {
-  id                     Int      @id @default(autoincrement())
-  temp_media             String?  @db.VarChar(45)
-  temp_max               String?  @db.VarChar(45)
-  temp_min               String?  @db.VarChar(45)
-  hora_temp_max          String?  @db.VarChar(45)
-  hora_temp_min          String?  @db.VarChar(45)
-  um_media               String?  @db.VarChar(45)
-  um_max                 String?  @db.VarChar(45)
-  um_min                 String?  @db.VarChar(45)
-  hora_um_max            String?  @db.VarChar(45)
-  hora_um_min            String?  @db.VarChar(45)
-  pluviosidade           String?  @db.VarChar(45)
-  velocidade_vento_media String?  @db.VarChar(45)
-  velocidade_vento_max   String?  @db.VarChar(45)
-  velocidade_vento_min   String?  @db.VarChar(45)
-  hora_velo_vento_max    String?  @db.VarChar(45)
-  hora_velo_vento_min    String?  @db.VarChar(45)
-  direcao_vento          String?  @db.VarChar(45)
-  hora_direcao_vento     String?  @db.VarChar(45)
-  estacao_id             Int?
-  estacao                estacao? @relation(fields: [estacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_dados_diarios_estacao1")
+  id               Int      @id @default(autoincrement())
+  temperatura      String?  @db.VarChar(45)
+  umidade          String?  @db.VarChar(45)
+  pluviosidade     String?  @db.VarChar(45)
+  velocidade_vento String?  @db.VarChar(45)
+  direcao_vento    String?  @db.VarChar(45)
+  data_hora        DateTime @db.DateTime(0)
+  estacao_id       Int?
+  estacao          estacao? @relation(fields: [estacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_dados_diarios_estacao1")
 
   @@index([estacao_id], map: "fk_dados_diarios_estacao_idx")
 }
 
 model estacao {
-  id            Int             @id @default(autoincrement())
+  id            Int             @id @unique(map: "id") @default(autoincrement())
   nome          String?         @db.VarChar(45)
   endereco      String?         @db.VarChar(45)
   latitude      Float?
