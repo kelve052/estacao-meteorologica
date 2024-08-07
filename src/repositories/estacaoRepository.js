@@ -1,12 +1,14 @@
 import { prisma } from "../configs/prismaClient.js"
 
 class estacaoRepository {
-    static async findMany(filtros) {
-        return await prisma.estacao.findMany(filtros);
+    static async findMany(filtro) {
+        return await prisma.estacao.findMany({
+            where: filtro
+        });
     }
 
     static async create(data) {
-        return await prisma.estacao.create({ data });
+        return await prisma.estacao.create({ data: data });
     }
 
     static async update(id, data) {
