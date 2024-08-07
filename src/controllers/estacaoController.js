@@ -52,7 +52,7 @@ class Estacao {
     } catch (err) {
       console.error(err);
       res.status(400).json([{
-        message: err.message,
+        message: err,
         code: 400,
         error: true
       }])
@@ -178,7 +178,7 @@ class Estacao {
     } catch (error) {
       console.log(error);
       return res.status(400).json({
-        message: error.message,
+        message: error,
         code: 400,
         error: true,
       });
