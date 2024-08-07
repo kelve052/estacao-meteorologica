@@ -6,6 +6,7 @@ import app from "../../app.js";
 // Apenas para teste depois irei refatorar
 // ---------------- Login ----------------
 let token;
+let idvalido;
 
 it('Login com autenticação jwt', async () => {
     const response = await request(app)
@@ -135,10 +136,11 @@ describe("Atualizar estação", () => {
 
         expect(response.status).toBe(200);
         expect(body.response).toBeInstanceOf(Array);
+        idvalido=body.response[0].id;
     });
     
     it('Listar estação por ID valido', async () => {
-      const idvalido = "10";
+      
       const response = await request(app)
           .get(`/estacoes/${idvalido}`)
           .set("Authorization", `Bearer ${token}`)
@@ -146,7 +148,7 @@ describe("Atualizar estação", () => {
         //testando a resposta
       expect(response.status).toBe(200);
       // testando se esta retornando o id esperado
-      expect({id: '10'}).toHaveProperty('id', idvalido);
+      expect({id: idvalido}).toHaveProperty('id', idvalido);
       //testando se retorna json
       expect(response.headers['content-type']).toContain('json');
     });

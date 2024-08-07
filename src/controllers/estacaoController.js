@@ -23,9 +23,10 @@ class Estacao {
   // GET por ID - listar Usuario por ID 
   static listarPorId = async (req, res) => {
     try {
-      const estacao = await estacaoService.listarPorID(parseInt(req.params.id));
+      let estacao = await estacaoService.listarPorID(req.params.id)
+
       if (!estacao) {
-        throw new Error("Estação não encontrada");
+        throw new Error.message
       }
       res.status(200).json([{
         message: "Estação encontrada com sucesso",
@@ -212,7 +213,6 @@ class Estacao {
       }
       console.error(err);
       return res.status(500).json([{ error: true, code: 500, message: "Erro interno do Servidor" }]);
-
     }
   }
 
