@@ -2,7 +2,13 @@ import { prisma } from "../configs/prismaClient.js"
 
 class usuarioRepository {
     static async findMany(filtros) {
-        return await prisma.usuario.findMany(filtros);
+        try {
+            return await prisma.usuario.findMany({
+                where: filtros
+            });
+        } catch (error) {
+            throw error
+        }
     }
 
     static async create(data) {
