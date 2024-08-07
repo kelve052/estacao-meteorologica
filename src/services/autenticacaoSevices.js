@@ -9,9 +9,9 @@ class AutenticacaoServices {
             const loginSchema = z.object({
                 email: z.string({
                     required_error: 'Email é obrigatório!',
-                    invalid_type_error: 'Formato invalido, deve ser string!'
+                    invalid_type_error: 'Formato invalido, deve ser string!',
                 }).email({
-                    invalid_type_error: 'Email invalido!'
+                    message: 'Email invalido!',
                 }),
                 senha: z.string({
                     required_error: 'Senha é obrigatório!',
@@ -29,17 +29,16 @@ class AutenticacaoServices {
             });
 
             const loginValidated = loginSchema.required().parse(data)
-
-
-
+            console.log(data.length === 0)
             const usuario = await usuarioRepository.findMany(loginValidated)
+            console.log(usuario.length === 0)
             if (usuario.length === 0) {
                 throw new Error('Email ou senha invalido')
             }
+            console.log(data.length === 0)
             const token = Jwt.sign({email, senha}, process.env.JWT_SECRET, {expiresIn: '30d'})
             console.log(token)
             return token
-
         } catch (error) {
             if (error instanceof z.ZodError) {
                 console.log('sim')
@@ -47,7 +46,7 @@ class AutenticacaoServices {
                 throw errosMessages
             } else {
                 console.log('não    ')
-                throw error
+                throw error.message
             }
         }
     }
