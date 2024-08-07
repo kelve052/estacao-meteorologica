@@ -139,34 +139,6 @@ class Estacao {
         });
       }
 
-      // Verificar se o usuário existe
-      // const user = await prisma.usuario.findFirst({
-      //   where: {
-      //     id: usuario_id,
-      //   },
-      // });
-
-      // if (!user) {
-      //   return res.status(400).json({
-      //     message: "Usuário não encontrado",
-      //     code: 400,
-      //     error: true,
-      //   });
-      // }
-
-      // // Verificar se o nome da estação já está cadastrado
-      // const stationNameExists = await prisma.estacao.findFirst({
-      //   where: {
-      //     nome: {
-      //       equals: req.body.nome,
-      //     }
-      //   },
-      // });
-
-      // if (stationNameExists) {
-      //   return res.status(400).json({ error: true, code: 400, message: "Nome já cadastrado" });
-      // }
-
       const response = await estacaoService.inserir(data);
 
       return res.status(201).json({
@@ -176,12 +148,7 @@ class Estacao {
         error: false
       });
     } catch (error) {
-      console.log(error);
-      return res.status(400).json({
-        message: error,
-        code: 400,
-        error: true,
-      });
+      return res.status(error.code).json(error);
     }
   };
 
