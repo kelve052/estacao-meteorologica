@@ -24,15 +24,10 @@ class Estacao {
 
       const response = await estacaoService.listar(filtro)
 
-      res.json({response})
+      res.status(200).json(response)
 
     } catch (error) {
-      res.status(400).json({
-        error: true,
-        code: 400,
-        message: error.message
-      }
-      )
+      res.status(error.code).json(error)
     }
   }
   // GET por ID - listar Usuario por ID 
