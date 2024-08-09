@@ -151,7 +151,7 @@ describe("Atualizar estação", () => {
       expect({id: idvalido}).toHaveProperty('id', idvalido);
       //testando se retorna json
       expect(response.headers['content-type']).toContain('json');
-    });
+    }); 
     it('Deve retornar erro ao listar estação com id invalido', async () => {
       const idinvalido = "9999";
       const response = await request(app)
