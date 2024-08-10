@@ -8,38 +8,31 @@ datasource db {
 }
 
 model dados_diarios {
-  id               Int      @id @default(autoincrement())
-  temperatura      String?  @db.VarChar(45)
-  umidade          String?  @db.VarChar(45)
-  pluviosidade     String?  @db.VarChar(45)
-  velocidade_vento String?  @db.VarChar(45)
-  direcao_vento    String?  @db.VarChar(45)
-  data_hora        DateTime @db.DateTime(0)
-  estacao_id       Int?
-  estacao          estacao? @relation(fields: [estacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_dados_diarios_estacao1")
-
-  @@index([estacao_id], map: "fk_dados_diarios_estacao_idx")
+  id             Int      @id @default(autoincrement())
+  temperature    String?  @db.VarChar(45)
+  humidity       String?  @db.VarChar(45)
+  rainfall       String?  @db.VarChar(45)
+  wind_speed_kmh Int?
+  data_hora      DateTime @db.Date
 }
 
 model estacao {
-  id            Int             @id @unique(map: "id") @default(autoincrement())
-  nome          String?         @db.VarChar(45)
-  endereco      String?         @db.VarChar(45)
-  latitude      Float?
-  longitude     Float?
-  ip            String?         @db.VarChar(45)
-  status        String?         @db.VarChar(45)
-  usuario_id    Int?
-  dados_diarios dados_diarios[]
-  usuario       usuario?        @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_estacao_usuario")
+  id         Int     @id @default(autoincrement())
+  nome       String? @db.VarChar(45)
+  endereco   String? @db.VarChar(45)
+  latitude   Float?
+  longitude  Float?
+  ip         String? @db.VarChar(45)
+  status     String? @db.VarChar(45)
+  usuario_id Int
+  usuario    usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade, map: "fk_estacao_usuario")
 
-  @@index([usuario_id], map: "fk_estacao_usuario_idx")
+  @@index([usuario_id], map: "fk_estacao_usuario")
 }
 
 model usuario {
   id      Int       @id @default(autoincrement())
   nome    String?   @db.VarChar(50)
-  idade   Int?
   email   String?   @db.VarChar(100)
   senha   String    @db.VarChar(255)
   estacao estacao[]
