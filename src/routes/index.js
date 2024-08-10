@@ -1,9 +1,8 @@
 import express from "express";
-//import exemplo from "./exemploRouter.js";
 import estacoes from "./estacaoRouter.js"
-import usuarioRouter from "./usuarioRouter.js";
 import autenticacao from "./autenticacaoRouter.js";
 import usuarios from "./usuarioRouter.js";
+import dados from "./dadosRouter.js"
 
 
 
@@ -16,9 +15,8 @@ const routes = (app) => {
         express.json(),
         estacoes,
         autenticacao,
-        usuarios
-        // rota apenas para teste
-        //demais rotas a serem criadas
+        usuarios,
+        dados
     )
 }
 
