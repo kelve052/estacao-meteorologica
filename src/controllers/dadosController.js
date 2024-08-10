@@ -1,40 +1,40 @@
-import dadosService from "../services/dadosService";
+import dadosService from "../services/dadosService.js";
 
 class Dados {
     static async listar(req, res) {
         try {
-            const { id, temperatura, umidade, pluviosidade, velocidade_vento, direcao_vento, data_hora, estacao_id } = req.query;
+            const { temperature, humidity, rainfall, wind_speed_kmh, data_hora } = req.query;
 
             const filtro = {
-                id: id,
-                temperatura: temperatura,
-                umidade: umidade,
-                pluviosidade: pluviosidade,
-                velocidade_vento: velocidade_vento,
-                direcao_vento: direcao_vento,
+                temperature: temperature,
+                humidity: humidity,
+                rainfall: rainfall,
+                wind_speed_kmh: wind_speed_kmh,
                 data_hora: data_hora,
-                estacao_id: estacao_id
             }
 
             const response = await dadosService.listar(filtro)
 
+            console.log(response);
+
             res.status(200).json(response)
 
         } catch (error) {
+            console.log(error)
             res.status(error.code).json(error)
         }
     }
 
     static async inserir(req, res) {
         try {
-            const { temperatura, umidade, pluviosidade, velocidade_vento, direcao_vento } = req.body;
+            const { temperature, humidity, rainfall, wind_speed_kmh } = req.body;
 
             const data = {
-                temperatura: temperatura,
-                umidade: umidade,
-                pluviosidade: pluviosidade,
-                velocidade_vento: velocidade_vento,
-                direcao_vento: direcao_vento,
+                temperature: temperature,
+                humidity: humidity,
+                rainfall: rainfall,
+                wind_speed_kmh: wind_speed_kmh,
+                data_hora: new Date(),
             }
 
             const response = await dadosService.inserir(data)

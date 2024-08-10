@@ -1,31 +1,21 @@
-import dadosRepository from "../repositories/dadosRepository"
+import dadosRepository from "../repositories/dadosRepository.js"
 import { z } from "zod";
 
 class dadosService {
     static async listar(filtro) {
         try {
             const filtroSchema = z.object({
-                id: z.preprocess((val) => Number(val), z.number({
-                    invalid_type_error: "ID informado não é do tipo number",
-                }).int({
-                    message: "ID informado não é um número inteiro"
-                }).positive({
-                    message: "ID informado não é positivo"
-                })).optional(),
-                temperatura: z.string({
+                temperature: z.string({
                     invalid_type_error: "Temperatura informada não é do tipo string"
                 }).optional(),
-                umidade: z.string({
+                humidity: z.string({
                     invalid_type_error: "Umidade informada não é do tipo string"
                 }).optional(),
-                pluviosidade: z.string({
+                rainfall: z.string({
                     invalid_type_error: "Pluviosidade informada não é do tipo string"
                 }).optional(),
-                velocidade_vento: z.string({
-                    invalid_type_error: "Velocidade do vento informada não é do tipo string"
-                }).optional(),
-                direcao_vento: z.string({
-                    invalid_type_error: "Direção do vento informada não é do tipo string"
+                wind_speed_kmh: z.number({
+                    invalid_type_error: "Velocidade do vento informada não é do tipo int"
                 }).optional(),
                 data_hora: z.date({
                     invalid_type_error: "Data informada não é do tipo string"
@@ -56,21 +46,21 @@ class dadosService {
     static async inserir(data) {
         try {
             const dadosSchema = z.object({
-                temperatura: z.string({
+                temperature: z.string({
                     invalid_type_error: "Temperatura informada não é do tipo string"
                 }).nullable(),
-                umidade: z.string({
+                humidity: z.string({
                     invalid_type_error: "Umidade informada não é do tipo string"
                 }).nullable(),
-                pluviosidade: z.string({
+                rainfall: z.string({
                     invalid_type_error: "Pluviosidade informada não é do tipo string"
                 }).nullable(),
-                velocidade_vento: z.string({
-                    invalid_type_error: "Velocidade do vento informada não é do tipo string"
+                wind_speed_kmh: z.number({
+                    invalid_type_error: "Velocidade do vento informada não é do tipo int"
                 }).nullable(),
-                direcao_vento: z.string({
-                    invalid_type_error: "Direção do vento informada não é do tipo string"
-                }).nullable(),
+                data_hora: z.date({
+                    invalid_type_error: "Velocidade do vento informada não é do tipo date"
+                })
             });
             const dadosValidated = dadosSchema.parse(data);
             const response = dadosRepository.create(dadosValidated)
@@ -79,6 +69,7 @@ class dadosService {
                 code: 400,
                 error: true
             }
+            return response;
         } catch (error) {
             if (error instanceof z.ZodError) {
                 const errorMessages = error.issues.map((issue) => issue.message);

@@ -1,5 +1,5 @@
 import express from 'express';
-import Dados from '../controllers/dadosController';
+import Dados from '../controllers/dadosController.js';
 
 const router = express.Router();
 router.get('/dados', Dados.listar);
