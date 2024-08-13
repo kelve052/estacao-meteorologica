@@ -61,7 +61,6 @@ class estacaoService {
             } else {
                 throw error;
             }
-
         }
     }
 

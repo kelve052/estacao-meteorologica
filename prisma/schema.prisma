@@ -33,13 +33,12 @@ model estacao {
   dados_diarios dados_diarios[]
   usuario       usuario?        @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_estacao_usuario")
 
-  @@index([usuario_id], map: "fk_estacao_usuario_idx")
+  @@index([usuario_id], map: "fk_estacao_usuario")
 }
 
 model usuario {
   id      Int       @id @default(autoincrement())
   nome    String?   @db.VarChar(50)
-  idade   Int?
   email   String?   @db.VarChar(100)
   senha   String    @db.VarChar(255)
   estacao estacao[]
