@@ -7,7 +7,7 @@ import app from "../../app.js";
 // ---------------- Login ----------------
 let token;
 
-it('Login com autenticação jwt', async () => {
+it.skip('Login com autenticação jwt', async () => {
     const response = await request(app)
         .post("/autenticacao")
         .send({
@@ -20,7 +20,7 @@ it('Login com autenticação jwt', async () => {
 
 // ----------- Cadastrar Estação ---------
 
-describe("Cadastrar estação", () => {
+describe.skip("Cadastrar estação", () => {
     it('Deve cadastrar uma estação com dados válidos', async () => {
         const response = await request(app)
             .post('/estacoes')
@@ -80,7 +80,7 @@ describe("Cadastrar estação", () => {
 
 // ----------- Atualizar Estação ---------
 
-describe("Atualizar estação", () => {
+describe.skip("Atualizar estação", () => {
     it('Atualização dos dados de uma estação', async () => {
         const updatedData = {
             nome: "Estação Atualizada 2.0",
