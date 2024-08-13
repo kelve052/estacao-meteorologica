@@ -26,7 +26,7 @@ class Estacao {
       let estacao = await estacaoService.listarPorID(req.params.id)
 
       if (!estacao) {
-        throw new Error.message
+        throw new Error("Estação não encontrada");
       }
       res.status(200).json([{
         message: "Estação encontrada com sucesso",
@@ -199,12 +199,13 @@ class Estacao {
 
       const id = req.params.id;
 
-      await estacaoService.deletar(parseInt(id));
+      const resposta = await estacaoService.deletar(parseInt(id));
 
       return res.status(200).json({
         error: false,
         code: 200,
-        message: "Estação excluída com sucesso"
+        message: "Estação excluída com sucesso",
+        data:resposta
       });
 
     } catch (error) {

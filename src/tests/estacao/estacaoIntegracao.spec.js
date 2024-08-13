@@ -140,7 +140,6 @@ describe("Atualizar estação", () => {
     });
     
     it('Listar estação por ID valido', async () => {
-      
       const response = await request(app)
           .get(`/estacoes/${idvalido}`)
           .set("Authorization", `Bearer ${token}`)
@@ -151,6 +150,8 @@ describe("Atualizar estação", () => {
       expect({id: idvalido}).toHaveProperty('id', idvalido);
       //testando se retorna json
       expect(response.headers['content-type']).toContain('json');
+      //testando a resposta response.body é uma instancia de um objeto
+      expect(response.body).toBeInstanceOf(Array);
     }); 
     it('Deve retornar erro ao listar estação com id invalido', async () => {
       const idinvalido = "9999";
