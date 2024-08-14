@@ -186,10 +186,31 @@ class Usuario {
             res.send(error)
           }
         }
-    }
-    // static listarPorId = async (req, res) => {
+        static listarPorId = async (req, res) => {
+            try {
+              const id = req.params.id
+              let usuario = await usuarioService.listarPorID(id)
         
-    // }
+              if (!usuario) {
+                throw new Error("Usuário não encontrado");
+              }
+              res.status(200).json([{
+                message: "Usuário encontrado com sucesso",
+                code: 200,
+                error: false,
+                data: usuario
+              }])
+            } catch (err) {
+              
+              res.status(400).json([{
+                message: err.message,
+                code: 400,
+                error: true
+              }])
+            }
+          }
+    }
+    
 
 
 export default Usuario;

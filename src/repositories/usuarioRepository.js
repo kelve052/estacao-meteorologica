@@ -16,6 +16,17 @@ class usuarioRepository {
             throw error
         }
     }
+    static async findById(id) {
+        return await prisma.usuario.findUnique({
+             where: {id} ,
+             select: {
+                id: true,
+                nome:true,
+                email:true,
+                senha:false
+            }
+            });
+      }
 
     static async create(data) {
         return await prisma.usuario.create({ data });

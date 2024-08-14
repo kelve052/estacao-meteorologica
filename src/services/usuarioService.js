@@ -42,7 +42,23 @@ class usuarioService {
             }
         }
     }
-    
+    static async listarPorID(id) {
+        if (!id) {
+          return res.status(404).json([{
+            message: "ID não recebido",
+            code: 404,
+            error: true
+          }])
+        }
+        else {
+          let idusuario = parseInt(id)
+          if (!idusuario) {
+            throw new Error("ID invalido")
+          } else {
+            return await usuarioRepository.findById(idusuario)
+          }
+        }
+      }
     static async inserir(data) {
         // Regra de negócio e validações
         return await usuarioRepository.create(data);
