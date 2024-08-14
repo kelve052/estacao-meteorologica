@@ -138,4 +138,43 @@ describe.skip("Atualizar estação", () => {
     });
 });
 
+// ----------- Deletar Estação ---------
+
+describe("Deletar estação", () => {
+    it('deve deletar a estação com id valido', async () => {
+        const id = "10";
+        const response = await request(app)
+          .get(`/estacoes/${id}`)
+          .set("Authorization", `Bearer ${token}`)
+          .set("Content-Type", "application/json")
+        //testando a resposta
+        expect(response.status).toBe(200);
+        //testando se retorna json
+        expect(response.headers['content-type']).toContain('json');
+        //testando a resposta response.body é uma instancia de um objeto
+        expect(response.body).toBeInstanceOf(Array);
+        //testando se o erro é falso
+        expect({error: false}).toHaveProperty('error', false);
+        //testando a mensagem de retorno
+        expect({message: 'Estação excluída com sucesso'}).toHaveProperty('message', "Estação excluída com sucesso");        
+    })
+    it('deve retornar erro com o id invalido', async () => {
+        const id = "999999";
+        const response = await request(app)
+          .get(`/estacoes/${id}`)
+          .set("Authorization", `Bearer ${token}`)
+          .set("Content-Type", "application/json")
+        //testando a resposta
+        expect(response.status).toBe(400);
+        //testando se retorna json
+        expect(response.headers['content-type']).toContain('json');
+        //testando a resposta response.body é uma instancia de um objeto
+        expect(response.body).toBeInstanceOf(Array);
+        //testando se o erro é true
+        expect({error: true}).toHaveProperty('error', true);
+        //testando a mensagem de retorno
+        expect({message: 'Estação não encontrada'}).toHaveProperty('message', "Estação não encontrada");     
+    })
+});
+
 
