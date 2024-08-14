@@ -1,4 +1,5 @@
 import { prisma } from "../configs/prismaClient.js";
+import usuarioService from "../services/usuarioService.js"
 
 class Usuario {
     static cadastrar = async (req, res) => {
@@ -167,6 +168,28 @@ class Usuario {
             });
         }
     }
-}
+    static listar = async (req, res) => {
+        try {
+            const { id, nome, email } = req.query;
+      
+            const filtro = {
+              id: id,
+              nome: nome,
+              email: email
+            }
+      
+            const response = await usuarioService.listar(filtro)
+      
+            res.status(200).json(response)
+      
+          } catch (error) {
+            res.send(error)
+          }
+        }
+    }
+    // static listarPorId = async (req, res) => {
+        
+    // }
+
 
 export default Usuario;

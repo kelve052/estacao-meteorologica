@@ -4,7 +4,13 @@ class usuarioRepository {
     static async findMany(filtros) {
         try {
             return await prisma.usuario.findMany({
-                where: filtros
+                where: filtros,
+                select: {
+                    id: true,
+                    nome:true,
+                    email:true,
+                    senha:false
+                }
             });
         } catch (error) {
             throw error
