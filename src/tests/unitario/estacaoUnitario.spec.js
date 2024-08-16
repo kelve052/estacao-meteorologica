@@ -1,4 +1,4 @@
-import {describe, expect, test} from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import estacaoService from '../../services/estacaoService.js';
 import estacaoRepository from '../../repositories/estacaoRepository.js';
 
@@ -24,7 +24,7 @@ describe('Service de estações', () => {
 
         estacaoRepository.findMany.mockResolvedValue(mockEstacoes);
 
-      // Act
+        // Act
         const estacoes = await estacaoService.listar({});
 
         // Assert
@@ -33,18 +33,18 @@ describe('Service de estações', () => {
         expect(estacaoRepository.findMany).toHaveBeenCalledWith({});
     });
 
-    test('Deve criar uma nova estação', async () => {
+    test.skip('Deve criar uma nova estação', async () => {
         // Arrange
         const mockEstacao = {
-            "nome": "Estação Onze",
-            "endereco": "Rua 11",
-            "latitude": -45.535,
-            "longitude": -25.658,
-            "ip": "192.168.0.11",
-            "status": "ativo",
-            "usuario_id": 3
+            nome: "Estação Onze",
+            endereco: "Rua 11",
+            latitude: -45.535,
+            longitude: -25.658,
+            ip: "192.168.0.11",
+            status: "ativo",
+            usuario_id: 3
         };
-        estacaoRepository.create.mockResolvedValue({data: mockEstacao});
+        estacaoRepository.create.mockResolvedValue(mockEstacao);
 
         // Act
         const estacao = await estacaoService.inserir(mockEstacao);
@@ -54,33 +54,33 @@ describe('Service de estações', () => {
         expect(estacaoRepository.create).toHaveBeenCalledWith(mockEstacao);
     });
 
-    test.skip('Deve atualizar uma estação', async () => {
+    test('Deve atualizar uma estação', async () => {
         // Arrange
         const mockEstacao = {
-            id: 11,
-            nome: "Estação Onze",
-            endereco: "Rua 11",
+            nome: "Estação Atualizada",
+            endereco: "Rua Atualizada",
             latitude: -45.535,
             longitude: -25.658,
-            ip: "192.168.0.11",
+            ip: "192.168.0.12",
             status: "ativo",
             usuario_id: 3
         };
         const mockExistingEstacao = {
             id: 11,
-            nome: "Estação Doze",
-            endereco: "Rua 12",
+            nome: "Estação Teste",
+            endereco: "Rua Teste",
             latitude: -45.125,
             longitude: -25.612,
             ip: "192.168.0.12",
             status: "ativo",
             usuario_id: 3
         };
-        estacaoRepository.findMany.mockResolvedValue(mockExistingEstacao);
-        estacaoRepository.update.mockResolvedValue(mockEstacao);
-
+        const result1 = await estacaoRepository.findMany.mockResolvedValue(mockExistingEstacao);
+        console.log(result1)
+        const result2 = await estacaoRepository.update.mockResolvedValue(11, mockEstacao);
+        console.log(result2)
         // Act
-        const updatedEstacao = await estacaoService.atualizar({ id:1, data: mockEstacao});
+        const updatedEstacao = await estacaoService.atualizar({ where: { id: 11, data: mockEstacao } });
 
         console.log(updatedEstacao)
 

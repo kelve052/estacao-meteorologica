@@ -104,7 +104,6 @@ class estacaoService {
                 })
             });
             const estacaoValidated = estacaoSchema.parse(data)
-
             const filtroUsuarioId = { id: estacaoValidated.usuario_id };
             const usuario = await usuarioRepository.findMany(filtroUsuarioId);
             if (usuario.length === 0) throw {
@@ -112,6 +111,13 @@ class estacaoService {
                 code: 400,
                 error: true
             };
+            const estacao = await estacaoRepository.create(estacaoValidated);
+            if (!estacao) throw {
+                message: "Erro ao cadastrar estação",
+                code: 400,
+                error: true
+            };
+            return estacao;
 
         } catch (error) {
             if (error instanceof z.ZodError) {

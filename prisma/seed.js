@@ -10,16 +10,16 @@ async function seed() {
     // Insere novos dados na tabela `usuario`
     await prisma.usuario.createMany({
         data: [
-            { id: 1, nome: 'Carlos Silva', email: 'carlos@example.com', senha: 'senha123' },
-            { id: 2, nome: 'Ana Pereira', email: 'ana@example.com', senha: 'senha456' },
-            { id: 3, nome: 'João Souza', email: 'joao@example.com', senha: 'senha789' },
-            { id: 4, nome: 'Maria Oliveira', email: 'maria@example.com', senha: 'senha101' },
-            { id: 5, nome: 'Lucas Lima', email: 'lucas@example.com', senha: 'senha102' },
-            { id: 6, nome: 'Beatriz Santos', email: 'beatriz@example.com', senha: 'senha103' },
-            { id: 7, nome: 'Pedro Costa', email: 'pedro@example.com', senha: 'senha104' },
-            { id: 8, nome: 'Julia Gomes', email: 'julia@example.com', senha: 'senha105' },
-            { id: 9, nome: 'Fernanda Alves', email: 'fernanda@example.com', senha: 'senha106' },
-            { id: 10, nome: 'Rodrigo Ramos', email: 'rodrigo@example.com', senha: 'senha107' },
+            { id: 1, nome: 'Carlos Silva', email: 'carlos@example.com', senha: '$2a$10$BZT9CNJZ6Nd7RzRd.04Wp.wyGgRA2nN7grTQgCvDySzoepww.WCA6' },
+            { id: 2, nome: 'Ana Pereira', email: 'ana@example.com', senha: '$2a$10$BZT9CNJZ6Nd7RzRd.04Wp.wyGgRA2nN7grTQgCvDySzoepww.WCA6' },
+            { id: 3, nome: 'João Souza', email: 'joao@example.com', senha: '$2a$10$BZT9CNJZ6Nd7RzRd.04Wp.wyGgRA2nN7grTQgCvDySzoepww.WCA6' },
+            { id: 4, nome: 'Maria Oliveira', email: 'maria@example.com', senha: '$2a$10$BZT9CNJZ6Nd7RzRd.04Wp.wyGgRA2nN7grTQgCvDySzoepww.WCA6' },
+            { id: 5, nome: 'Lucas Lima', email: 'lucas@example.com', senha: '$2a$10$BZT9CNJZ6Nd7RzRd.04Wp.wyGgRA2nN7grTQgCvDySzoepww.WCA6' },
+            { id: 6, nome: 'Beatriz Santos', email: 'beatriz@example.com', senha: '$2a$10$BZT9CNJZ6Nd7RzRd.04Wp.wyGgRA2nN7grTQgCvDySzoepww.WCA6' },
+            { id: 7, nome: 'Pedro Costa', email: 'pedro@example.com', senha: '$2a$10$BZT9CNJZ6Nd7RzRd.04Wp.wyGgRA2nN7grTQgCvDySzoepww.WCA6' },
+            { id: 8, nome: 'Julia Gomes', email: 'julia@example.com', senha: '$2a$10$BZT9CNJZ6Nd7RzRd.04Wp.wyGgRA2nN7grTQgCvDySzoepww.WCA6' },
+            { id: 9, nome: 'Fernanda Alves', email: 'fernanda@example.com', senha: '$2a$10$BZT9CNJZ6Nd7RzRd.04Wp.wyGgRA2nN7grTQgCvDySzoepww.WCA6' },
+            { id: 10, nome: 'Rodrigo Ramos', email: 'rodrigo@example.com', senha: '$2a$10$BZT9CNJZ6Nd7RzRd.04Wp.wyGgRA2nN7grTQgCvDySzoepww.WCA6' },
         ],
     });
 

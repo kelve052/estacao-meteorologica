@@ -68,7 +68,10 @@ class AutenticacaoServices {
   static criarToken = async (data) => {
     try {
       const camposValidados = await this.validarCampos(data)
+      console.log(camposValidados.senha)
       const usuario = await this.VerificarUsuario(camposValidados)
+      console.log(usuario[0].senha);
+    
       await this.validarSenhahash(camposValidados.senha, usuario[0].senha)
       const { email, senha } = usuario
       const token = Jwt.sign({ email, senha }, process.env.JWT_SECRET, { expiresIn: '30d' })
