@@ -16,7 +16,8 @@ class usuarioRepository {
     }
 
     static async update(id, data) {
-        return await prisma.usuario.update({ where: { id }, data });
+        const novId= parseInt(id)
+        return await prisma.usuario.update({ where: {id: novId}, data });
     }
 
     static async delete(id) {
