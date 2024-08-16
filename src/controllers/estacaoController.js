@@ -27,7 +27,7 @@ class Estacao {
       res.status(200).json(response)
 
     } catch (error) {
-      res.status(error.code).json(error)
+      res.send(error)
     }
   }
   // GET por ID - listar Usuario por ID 

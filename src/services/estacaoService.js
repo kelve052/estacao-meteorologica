@@ -3,7 +3,7 @@ import usuarioRepository from "../repositories/usuarioRepository.js";
 import { z } from "zod";
 
 class estacaoService {
-    static async listar(filtro) {
+     async listar(filtro) {
         try {
             const filtroSchema = z.object({
                 id: z.preprocess((val) => Number(val), z.number({
@@ -64,7 +64,7 @@ class estacaoService {
         }
     }
 
-    static async inserir(data) {
+     async inserir(data) {
         try {
             const estacaoSchema = z.object({
                 nome: z.string({
@@ -131,15 +131,15 @@ class estacaoService {
         }
     }
 
-    static async atualizar(id, data) {
+     async atualizar(id, data) {
         // Regra de negócio e validações
         return await estacaoRepository.update(id, data);
     }
 
-    static async deletar(id) {
+     async deletar(id) {
         // Regra de negócio e validações
         return await estacaoRepository.delete(id);
     }
 }
 
-export default estacaoService;
+export default new estacaoService();
