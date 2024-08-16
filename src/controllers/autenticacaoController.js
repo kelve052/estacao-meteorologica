@@ -16,12 +16,7 @@ class Autenticacao {
         data: null
       })
     } catch (error) {
-      res.status(400).json({
-        error: false,
-        code: 400,
-        message: error,
-        data: false
-      })
+      res.status(error.code).json(error)
     }
 
   }
