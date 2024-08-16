@@ -1,6 +1,7 @@
 import usuarioRepository from '../repositories/usuarioRepository.js'
 import { z } from "zod";
 import Jwt from "jsonwebtoken";
+import Hashsenha from '../util/hashSenha.js';
 
 class AutenticacaoServices {
   // valida os campos emial e senha
@@ -9,13 +10,13 @@ class AutenticacaoServices {
       const loginSchema = z.object({
         email: z.string({
           required_error: 'Campo email é obrigatório!',
-          invalid_type_error: 'Formato invalido, deve ser string!',
+          invalid_type_error: 'Formato do email invalido, deve ser string!',
         }).email({
           message: 'Email invalido!',
         }),
         senha: z.string({
           required_error: 'Campo senha é obrigatório!',
-          invalid_type_error: 'Formato invalido, deve ser string!'
+          invalid_type_error: 'Formato da senha invalido, deve ser string!'
         }).min(8).refine(
           (value) =>
             /[a-z]/.test(value) &&  // Tem pelo menos uma letra minúscula
@@ -27,6 +28,7 @@ class AutenticacaoServices {
           }
         )
       });
+      
 
       const loginValidated = loginSchema.required().parse(data)
       return loginValidated
@@ -38,9 +40,13 @@ class AutenticacaoServices {
   //verifica se existe um usuario com os campos passados
   static VerificarUsuario = async (data) => {
     try {
-      const usuario = await usuarioRepository.findMany(data)
+      const usuario = await usuarioRepository.findMany({email: data.email})
       if (usuario.length === 0) {
-        throw new Error('Email ou senha invalido')
+        throw {
+          message: "Email Não cadastrado!",
+          code: 400,
+          error: true
+      };
       }
       return usuario
     } catch (error) {
@@ -48,11 +54,22 @@ class AutenticacaoServices {
     }
   }
 
+  static validarSenhahash = async (senha, hash)=>{
+    const response = await Hashsenha.compararSenha(senha, hash)
+    if(!response){
+      throw {
+        message: "Senha Invalida!",
+        code: 400,
+        error: true
+    };
+    }
+  }
+
   static criarToken = async (data) => {
     try {
       const camposValidados = await this.validarCampos(data)
       const usuario = await this.VerificarUsuario(camposValidados)
-
+      await this.validarSenhahash(camposValidados.senha, usuario[0].senha)
       const { email, senha } = usuario
       const token = Jwt.sign({ email, senha }, process.env.JWT_SECRET, { expiresIn: '30d' })
       return token
@@ -60,9 +77,13 @@ class AutenticacaoServices {
 
       if (error instanceof z.ZodError) {
         const errosMessages = error.issues.map(error => error.message)
-        throw errosMessages
+        throw {
+          message: errosMessages,
+          code: 400,
+          error: true
+      };
       } else {
-        throw error.message
+        throw error
       }
     }
   }
