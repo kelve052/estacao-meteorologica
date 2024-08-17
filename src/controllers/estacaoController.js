@@ -71,57 +71,19 @@ class Estacao {
 
   static atualizar = async (req, res) => {
     try {
-      const { id } = req.params;
-      const intId = parseInt(id)
-      const estacaoById = await prisma.estacao.findUnique({
-        where: {
-          id: intId
-        }
-      });
-      if (!estacaoById) {
-        return res.status(400).json({
-          message: "Estação não encontrada.",
-          code: 400,
-          error: true,
-        });
-      }
-      for (const value in req.body) {
-        if (!req.body[value]) {
-          return res.status(400).json({
-            message: `Campo ${value} não específicado.`,
-            code: 400,
-            error: true,
-          });
-        }
-      }
-      const estacaoAtualizada = await prisma.estacao.update({
-        where: {
-          id: intId
-        },
-        data: {
-          nome: req.body.nome,
-          endereco: req.body.endereco,
-          latitude: req.body.latitude,
-          longitude: req.body.longitude,
-          ip: req.body.ip,
-          status: req.body.status,
-          usuario_id: req.body.usuario_id,
-          dados_diarios: req.body.dados_diarios,
-          usuario: req.body.usuario,
-        }
-      });
+      const { id } = req.params
+      const {nome, endereco,latitude, longitude,ip,status,usuario_id } = req.body
+      const data = { nome, endereco,latitude, longitude,ip,status,usuario_id }
+      const response = await estacaoService.atualizar(id, data)
+
       res.status(200).json({
         message: "Estação atualizada com sucesso.",
         error: false,
         code: 200,
-        data: estacaoAtualizada,
+        data: response,
       });
     } catch (error) {
-      return res.status(400).json({
-        message: error.message,
-        code: 400,
-        error: true,
-      });
+      return res.status(error.code).json(error);
     }
 
   }
