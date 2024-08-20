@@ -1,12 +1,11 @@
-import { response } from "express";
 import { prisma } from "../configs/prismaClient.js";
-import usuarioService from "../services/usuarioService.js";
+import UsuarioService from "../services/usuarioService.js";
 
 class Usuario {
     static cadastrar = async (req, res) => {
         try {
             const { nome, email, senha } = req.body;
-            const resnponse = await usuarioService.inserir({nome, email, senha})
+            const resnponse = await UsuarioService.inserir({nome, email, senha})
 
             return res.status(201).json({
                 data: resnponse,
@@ -24,7 +23,7 @@ class Usuario {
             const {id} = req.params
                 const {nome,email,senha}= req.body
                 const data = {nome,email,senha}
-                const response= await usuarioService.atualizar(id, data)
+                const response= await UsuarioService.atualizar(id, data)
            
             res.status(200).json({
                 message: "Usuario atualizado com sucesso!!!",
@@ -39,49 +38,13 @@ class Usuario {
     }
 
     static deletar = async (req, res) => {
-        const { id } = Number(req.params);
-        const intId = parseInt(id);
-        try {
-            const usuarioById = await prisma.usuario.findUnique({
-                where: {
-                    id: intId
-                }
-            })
-            if (!usuarioById) {
-                res.status(400).json({
-                    error: true,
-                    code: 400,
-                    message: "Usuário não encontrado."
-                });
-                return;
-            }
-            const estacaoById = await prisma.estacao.findMany({
-                where: {
-                    usuario_id: intId
-                }
-            });
-            if (estacaoById.length == 0) {
-                const deleteUser = await prisma.usuario.delete({
-                    where: {
-                        id: intId
-                    },
-                });
-                res.status(200).json({
-                    response: deleteUser
-                });
-            } else {
-                res.status(400).json({
-                    error: true,
-                    code: 400,
-                    message: "Este usuário não pode ser deletado, existem estações vinculadas."
-                });
-            }
+        try{
+          const id = parseInt(req.params.id)
+          await UsuarioService.deletar(id)
+          res.status(204).json()
+         // a rota deletar só retorna o code: 204, não deve retornar mensagens e outras coisas
         } catch (error) {
-            res.status(400).json({
-                error: true,
-                code: 400,
-                message: error.message
-            });
+          return res.status(error.code).json(error);
         }
     }
 }

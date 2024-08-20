@@ -1,6 +1,6 @@
 import { prisma } from "../configs/prismaClient.js"
 
-class usuarioRepository {
+class UsuarioRepository {
     static async findMany(filtros) {
         try {
             return await prisma.usuario.findMany({
@@ -21,8 +21,8 @@ class usuarioRepository {
     }
 
     static async delete(id) {
-        return await prisma.usuario.delete({ where: { id } });
+        return await prisma.usuario.delete({ where: id });
     }
 }
 
-export default usuarioRepository;
+export default UsuarioRepository;
