@@ -12,7 +12,7 @@ class estacaoRepository {
     }
 
      async update(id, data) {
-        return await prisma.estacao.update({ where: { id }, data });
+        return await prisma.estacao.update({ where: { id: id }, data: data });
     }
 
      async delete(id) {

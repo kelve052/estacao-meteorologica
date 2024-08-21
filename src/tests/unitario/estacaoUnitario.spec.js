@@ -15,7 +15,7 @@ describe('Service de estações', () => {
         jest.clearAllMocks();
     });
 
-    test.skip('Deve listar as estações', async () => {
+    test('Deve listar as estações', async () => {
         // Arrange
         const mockEstacoes = [
             { id: 1, nome: 'Estação Central', endereco: 'Rua 1, Centro', longitude: -23.5505, latitude: -46.6333, ip: '192.168.0.1', status: 'ativo', usuario_id: 1 },
@@ -33,7 +33,7 @@ describe('Service de estações', () => {
         expect(estacaoRepository.findMany).toHaveBeenCalledWith({});
     });
 
-    test.skip('Deve criar uma nova estação', async () => {
+    test('Deve criar uma nova estação', async () => {
         // Arrange
         const mockEstacao = {
             nome: "Estação Onze",
@@ -57,6 +57,7 @@ describe('Service de estações', () => {
     test('Deve atualizar uma estação', async () => {
         // Arrange
         const mockEstacao = {
+            id: 11,
             nome: "Estação Atualizada",
             endereco: "Rua Atualizada",
             latitude: -45.535,
@@ -75,18 +76,18 @@ describe('Service de estações', () => {
             status: "ativo",
             usuario_id: 3
         };
-        const result1 = await estacaoRepository.findMany.mockResolvedValue(mockExistingEstacao);
-        console.log(result1)
-        const result2 = await estacaoRepository.update.mockResolvedValue(11, mockEstacao);
-        console.log(result2)
-        // Act
-        const updatedEstacao = await estacaoService.atualizar({ where: { id: 11, data: mockEstacao } });
 
-        console.log(updatedEstacao)
+        estacaoRepository.findMany.mockResolvedValue([mockExistingEstacao]);
+        estacaoRepository.update.mockResolvedValue(mockEstacao);
+
+        // Act
+        const updatedEstacao = await estacaoService.atualizar(11, mockEstacao);
+        const expectedUpdateCall = { ...mockEstacao };
+        delete expectedUpdateCall.id;
 
         // Assert
         expect(updatedEstacao).toEqual(mockEstacao);
-        expect(estacaoRepository.findMany).toHaveBeenCalledWith(1);
-        expect(estacaoRepository.update).toHaveBeenCalledWith(1, mockEstacao);
+        expect(estacaoRepository.findMany).toHaveBeenCalledWith({id: 11});
+        expect(estacaoRepository.update).toHaveBeenCalledWith(11, expectedUpdateCall);
     });
 });

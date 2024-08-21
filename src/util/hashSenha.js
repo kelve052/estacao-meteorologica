@@ -8,7 +8,6 @@ class Hashsenha {
 
     static compararSenha = async (senha,hash) => {
         const passwordMatch = await bcrypt.compare(senha, hash);
-        console.log(passwordMatch)
         return passwordMatch
         
     }

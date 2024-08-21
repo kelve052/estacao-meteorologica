@@ -42,7 +42,6 @@ class usuarioService {
 
             //  verificação do email repitido
             const emailRepetido = await usuarioRepository.findMany({ email: data.email })
-            console.log(emailRepetido)
             if (!emailRepetido.length == 0) {
                 throw {
                     message: "Email Já Cadastrado!",
@@ -135,7 +134,6 @@ class usuarioService {
         } catch (error) {
             if (error instanceof z.ZodError) {
                 const errorMessages = error.issues.map((issue) => issue.message);
-                console.log(errorMessages)
                 throw {
                     message: errorMessages,
                     code: 400,
