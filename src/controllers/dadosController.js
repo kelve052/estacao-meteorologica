@@ -15,12 +15,9 @@ class Dados {
 
             const response = await dadosService.listar(filtro)
 
-            console.log(response);
-
             res.status(200).json(response)
 
         } catch (error) {
-            console.log(error)
             res.status(error.code).json(error)
         }
     }

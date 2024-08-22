@@ -1,23 +1,23 @@
 import { prisma } from "../configs/prismaClient.js"
 
 class estacaoRepository {
-    static async findMany(filtro) {
+     async findMany(filtro) {
         return await prisma.estacao.findMany({
             where: filtro
         });
     }
 
-    static async create(data) {
+     async create(data) {
         return await prisma.estacao.create({ data: data });
     }
 
-    static async update(id, data) {
-        return await prisma.estacao.update({ where: { id }, data });
+     async update(id, data) {
+        return await prisma.estacao.update({ where: { id: id }, data: data });
     }
 
-    static async delete(id) {
+     async delete(id) {
         return await prisma.estacao.delete({ where: { id } });
     }
 }
 
-export default estacaoRepository;
+export default new estacaoRepository();
