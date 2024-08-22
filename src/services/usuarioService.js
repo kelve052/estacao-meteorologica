@@ -42,7 +42,7 @@ class usuarioService {
 
             //  verificação do email repitido
             const emailRepetido = await usuarioRepository.findMany({ email: data.email })
-            if (!emailRepetido.length == 0) {
+            if (emailRepetido[0]) {
                 throw {
                     message: "Email Já Cadastrado!",
                     code: 400,
