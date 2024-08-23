@@ -1,4 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
+import bcrypt from 'bcryptjs'
 import usuarioService from '../../services/usuarioService.js';
 import usuarioRepository from '../../repositories/usuarioRepository.js';
 
@@ -8,6 +9,10 @@ jest.mock('../../repositories/usuarioRepository.js', () => ({
     update: jest.fn()
 }));
 
+jest.mock('bcryptjs', () => ({
+    hash: jest.fn().mockResolvedValue('$2a$10$sAYH1jr9ohI8spU0ENZFXe1NJcJg/UQRbvYzHQT1jbBUIASrg00am') // Senha mockada
+}));
+
 
 
 describe('Service de usuarios', () => {
@@ -15,13 +20,13 @@ describe('Service de usuarios', () => {
         jest.clearAllMocks();
     });
 
-    
+
     test('Deve criar um novo usuario', async () => {
         // Arrange
         const mockUsuario = {
             nome: "Rocha",
             email: "vitor@gmail.com",
-            senha: "Vv12345"
+            senha: "Senha123@"
         };
         usuarioRepository.create.mockResolvedValue(mockUsuario);
 
@@ -39,26 +44,45 @@ describe('Service de usuarios', () => {
             id: 11,
             nome: "Rocha",
             email: "vitor@gmail.com",
-            senha: "Vv12345"
+            senha: "Senha123@"
         };
         const mockExistingUsuario = {
             id: 11,
             nome: "Vitor Rocha",
             email: "vitor@gmail.com",
-            senha: "Vv12345"
+            senha: "Senha123@"
         };
-
+    
+        const hashedSenha = await bcrypt.hash(mockUsuario.senha, 10);
+    
         usuarioRepository.findMany.mockResolvedValue([mockExistingUsuario]);
-        usuarioRepository.update.mockResolvedValue(mockUsuario);
-
+        usuarioRepository.update.mockResolvedValue({
+            ...mockUsuario,
+            senha: hashedSenha
+        });
+    
         // Act
         const updatedUsuario = await usuarioService.atualizar(11, mockUsuario);
-        const expectedUpdateCall = { ...mockUsuario };
-        delete expectedUpdateCall.id;
-
+        const expectedUpdateCall = {
+            nome: "Rocha",
+            email: "vitor@gmail.com",
+            senha: hashedSenha // Senha criptografada gerada dinamicamente
+        };
+    
         // Assert
-        expect(updatedUsuario).toEqual(mockUsuario);
-        expect(usuarioRepository.findMany).toHaveBeenCalledWith({id: 11});
+        // Comparando a estrutura básica do objeto sem a senha
+        expect(updatedUsuario).toMatchObject({
+            id: 11,
+            nome: "Rocha",
+            email: "vitor@gmail.com",
+            senha: expect.any(String) // Verifica que é uma string, sem comparar o valor exato
+        });
+    
+        // Comparando a senha específica para garantir que seja a esperada
+        expect(updatedUsuario.senha).toBe(hashedSenha);
+    
+        // Verificando chamadas no repositório
+        expect(usuarioRepository.findMany).toHaveBeenCalledWith({ email: "vitor@gmail.com" });
         expect(usuarioRepository.update).toHaveBeenCalledWith(11, expectedUpdateCall);
     });
 });

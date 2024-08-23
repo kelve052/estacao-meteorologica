@@ -38,11 +38,11 @@ class usuarioService {
                     }
                 )
             })
-            const usuarioValidated = validacao.required().parse(data)
+            const usuarioValidated = validacao.parse(data)
 
             //  verificação do email repitido
             const emailRepetido = await usuarioRepository.findMany({ email: data.email })
-            if (emailRepetido[0]) {
+            if (emailRepetido) {
                 throw {
                     message: "Email Já Cadastrado!",
                     code: 400,
@@ -107,7 +107,7 @@ class usuarioService {
                 )
             })
 
-            const usuarioValidated = validacao.required().parse(data)
+            const usuarioValidated = validacao.parse(data)
 
             //  hash senha
             const hashSenha = await Hashsenha.criarHashSenha(data.senha)
@@ -116,8 +116,8 @@ class usuarioService {
             //  verificação do email repitido
             const emailRepetido = await usuarioRepository.findMany({ email: data.email })
 
-            if (!emailRepetido.length == 0) {
-                if (id != emailRepetido[0].id) {
+            if (!emailRepetido) {
+                if (id != emailRepetido.id) {
                     throw {
                         message: "Email Já Cadastrado!",
                         code: 400,
