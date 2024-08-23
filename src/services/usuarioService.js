@@ -1,8 +1,9 @@
-import usuarioRepository from "../repositories/usuarioRepository.js";
+import UsuarioRepository from "../repositories/usuarioRepository.js";
 import { z } from "zod";
 import Hashsenha from "../util/hashSenha.js";
 
-class usuarioService {
+class UsuarioService {
+
     static async listar(filtro) {
         try {
             const filtroSchema = z.object({
@@ -17,9 +18,9 @@ class usuarioService {
                     invalid_type_error: "Nome informado não é do tipo string"
                 }).trim().optional(),
                 email: z.string({
-                    invalid_type_error:"O Email tem que ser String"
+                    invalid_type_error: "O Email tem que ser String"
                 }).email({
-                    message:"Email invalido!"
+                    message: "Email invalido!"
                 }).optional(),
             });
             const filtroValidated = filtroSchema.parse(filtro)
@@ -45,23 +46,23 @@ class usuarioService {
     }
     static async listarPorID(id) {
         if (!id) {
-          return res.status(404).json([{
-            message: "ID não recebido",
-            code: 404,
-            error: true
-          }])
+            return res.status(404).json([{
+                message: "ID não recebido",
+                code: 404,
+                error: true
+            }])
         }
         else {
-          let idusuario = parseInt(id)
-          if (!idusuario) {
-            throw new Error("ID invalido")
-          } else {
-            return await usuarioRepository.findById(idusuario)
-          }
+            let idusuario = parseInt(id)
+            if (!idusuario) {
+                throw new Error("ID invalido")
+            } else {
+                return await usuarioRepository.findById(idusuario)
+            }
         }
-      }
+    }
+
     static async inserir(data) {
-        // Regra de negócio e validações
         try {
             const validacao = z.object({
                 nome: z.string({
@@ -91,9 +92,9 @@ class usuarioService {
                 )
             })
             const usuarioValidated = validacao.required().parse(data)
-
             //  verificação do email repitido
-            const emailRepetido = await usuarioRepository.findMany({ email: data.email })
+            const emailRepetido = await UsuarioRepository.findMany({ email: data.email })
+            console.log(emailRepetido)
             if (!emailRepetido.length == 0) {
                 throw {
                     message: "Email Já Cadastrado!",
@@ -102,15 +103,17 @@ class usuarioService {
                 }
             }
 
-
             //  hash senha
             const hashSenha = await Hashsenha.criarHashSenha(data.senha)
             usuarioValidated.senha = hashSenha
 
-
-
-
-            return await usuarioRepository.create(usuarioValidated);
+            const response = await UsuarioRepository.create(usuarioValidated);
+            const userResponse = { //para não exibir a senha do usuário no corpo da resposta
+                id: response.id,
+                nome: response.nome,
+                email: response.email
+            };
+            return userResponse
         } catch (error) {
             if (error instanceof z.ZodError) {
                 const errorMessages = error.issues.map((issue) => issue.message);
@@ -123,8 +126,6 @@ class usuarioService {
                 throw error;
             }
         }
-
-
     }
 
     static async atualizar(id, data) {
@@ -166,7 +167,7 @@ class usuarioService {
             usuarioValidated.senha = hashSenha
 
             //  verificação do email repitido
-            const emailRepetido = await usuarioRepository.findMany({ email: data.email })
+            const emailRepetido = await UsuarioRepository.findMany({ email: data.email })
 
             if (!emailRepetido.length == 0) {
                 if (id != emailRepetido[0].id) {
@@ -179,13 +180,12 @@ class usuarioService {
 
             }
 
-            return await usuarioRepository.update(id, usuarioValidated);
-
-
+            return await UsuarioRepository.update(id, usuarioValidated);
 
         } catch (error) {
             if (error instanceof z.ZodError) {
                 const errorMessages = error.issues.map((issue) => issue.message);
+                console.log(errorMessages)
                 throw {
                     message: errorMessages,
                     code: 400,
@@ -199,13 +199,20 @@ class usuarioService {
                 };
             }
         }
-        
+
     }
 
     static async deletar(id) {
-        // Regra de negócio e validações
-        return await usuarioRepository.delete(id);
+        const usuario = await UsuarioRepository.findMany({ id: id })
+        if (!usuario[0]) {
+            throw {
+                code: 400,
+                message: `Não existe usuário com este id: ${id}`,
+                error: true
+            }
+        }
+        return await UsuarioRepository.delete({ id: id });
     }
 }
 
-export default usuarioService;
+export default UsuarioService;
