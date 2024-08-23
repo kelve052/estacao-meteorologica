@@ -2,7 +2,13 @@ import { prisma } from "../configs/prismaClient.js"
 
 class usuarioRepository {
     static async findMany(filtros) {
-        return await prisma.usuario.findMany({where: filtros});
+        try {
+            return await prisma.usuario.findMany({
+                where: filtros
+            });
+        } catch (error) {
+            throw error
+        }
     }
 
     static async create(data) {
@@ -10,7 +16,8 @@ class usuarioRepository {
     }
 
     static async update(id, data) {
-        return await prisma.usuario.update({ where: { id }, data });
+        const novId= parseInt(id)
+        return await prisma.usuario.update({ where: {id: novId}, data });
     }
 
     static async delete(id) {

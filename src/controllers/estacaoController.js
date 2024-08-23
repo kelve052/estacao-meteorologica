@@ -27,7 +27,7 @@ class Estacao {
       res.status(200).json(response)
 
     } catch (error) {
-      res.status(error.code).json(error)
+      res.send(error)
     }
   }
   // GET por ID - listar Usuario por ID 
@@ -72,49 +72,27 @@ class Estacao {
   static atualizar = async (req, res) => {
     try {
       const { id } = req.params;
-      const intId = parseInt(id)
-      const estacaoById = await prisma.estacao.findUnique({
-        where: {
-          id: intId
-        }
-      });
-      if (!estacaoById) {
-        return res.status(400).json({
-          message: "Estação não encontrada.",
-          code: 400,
-          error: true,
-        });
+      const { nome, endereco, latitude, longitude, ip, status, usuario_id, dados_diarios } = req.body;
+      const parsedId = parseInt(id);
+      const data = {
+        nome: nome,
+        endereco: endereco,
+        latitude: latitude,
+        longitude: longitude,
+        ip: ip,
+        status: status,
+        usuario_id: usuario_id,
+        dados_diarios: dados_diarios,
       }
-      for (const value in req.body) {
-        if (!req.body[value]) {
-          return res.status(400).json({
-            message: `Campo ${value} não específicado.`,
-            code: 400,
-            error: true,
-          });
-        }
+      const response = await estacaoService.atualizar(parsedId, data);
+      if (!response) {
+        throw new Error("Não foi possível atualizar estação");
       }
-      const estacaoAtualizada = await prisma.estacao.update({
-        where: {
-          id: intId
-        },
-        data: {
-          nome: req.body.nome,
-          endereco: req.body.endereco,
-          latitude: req.body.latitude,
-          longitude: req.body.longitude,
-          ip: req.body.ip,
-          status: req.body.status,
-          usuario_id: req.body.usuario_id,
-          dados_diarios: req.body.dados_diarios,
-          usuario: req.body.usuario,
-        }
-      });
       res.status(200).json({
         message: "Estação atualizada com sucesso.",
         error: false,
         code: 200,
-        data: estacaoAtualizada,
+        data: response,
       });
     } catch (error) {
       return res.status(400).json({

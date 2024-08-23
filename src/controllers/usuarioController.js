@@ -1,128 +1,45 @@
+import { response } from "express";
 import { prisma } from "../configs/prismaClient.js";
+import usuarioService from "../services/usuarioService.js";
 
 class Usuario {
     static cadastrar = async (req, res) => {
         try {
-            const { nome, idade, email, senha } = req.body;
-            const erros = [];
-
-            if (!nome) {
-                erros.push({ error: true, code: 400, message: "Nome não informado" });
-            }
-            if (!idade) {
-                erros.push({ error: true, code: 400, message: "idade não informada" });
-            }
-            if (!email) {
-                erros.push({ error: true, code: 400, message: "email não informado" });
-            }
-            if (!senha) {
-                erros.push({ error: true, code: 400, message: "senha não informada" });
-            }
-
-
-            if (erros.length > 0) {
-                return res.status(400).json({
-                    message: erros,
-                    code: 400,
-                    error: true,
-                });
-            }
-
-            // Verificar se o email usuário existe
-            const emailUser = await prisma.usuario.findFirst({
-                where: {
-                    email: email,
-                },
-            });
-
-            if (emailUser) {
-                return res.status(400).json({
-                    message: "Usuario ja Cadastrado",
-                    code: 400,
-                    error: true,
-                });
-            }
-
-            const inserirUsuario = await prisma.usuario.create({
-                data: {
-                    nome: nome,
-                    idade: idade,
-                    email: email,
-                    senha: senha
-                }
-            });
+            const { nome, email, senha } = req.body;
+            const resnponse = await usuarioService.inserir({nome, email, senha})
 
             return res.status(201).json({
-                data: inserirUsuario,
+                data: resnponse,
                 message: 'usuario cadastrado com sucesso!',
                 code: 201,
                 error: false
             });
         } catch (error) {
-            console.log(error);
-            return res.status(400).json({
-                message: error.message,
-                code: 400,
-                error: true,
-            });
+            return res.status(error.code).json(error);
         }
     };
 
     static atualizar = async (req, res) => {
         try {
-            const { id } = req.params;
-            const intId = parseInt(id)
-            const usuarioById = await prisma.usuario.findUnique({
-                where: {
-                    id: intId
-                }
-            });
-            if (!usuarioById) {
-                return res.status(400).json({
-                    message: "Usuario não encontrado.",
-                    code: 400,
-                    error: true,
-                });
-            }
-            for (const value in req.body) {
-                if (!req.body[value]) {
-                    return res.status(400).json({
-                        message: `Campo ${value} não específicado.`,
-                        code: 400,
-                        error: true,
-                    });
-                }
-            }
-            const usuarioAtualizado = await prisma.usuario.update({
-                where: {
-                    id: intId
-                },
-                data: {
-                    nome: req.body.nome,
-                    idade: req.body.idade,
-                    email: req.body.email,
-                    senha: req.body.senha
-
-                }
-            });
+            const {id} = req.params
+                const {nome,email,senha}= req.body
+                const data = {nome,email,senha}
+                const response= await usuarioService.atualizar(id, data)
+           
             res.status(200).json({
                 message: "Usuario atualizado com sucesso!!!",
                 error: false,
                 code: 200,
-                data: usuarioAtualizado,
+                data: response,
             });
         } catch (error) {
-            return res.status(400).json({
-                message: error.message,
-                code: 400,
-                error: true,
-            });
+            return res.status(error.code).json(error);
         }
 
     }
 
     static deletar = async (req, res) => {
-        const { id } = req.params;
+        const { id } = Number(req.params);
         const intId = parseInt(id);
         try {
             const usuarioById = await prisma.usuario.findUnique({

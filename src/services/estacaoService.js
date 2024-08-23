@@ -3,7 +3,7 @@ import usuarioRepository from "../repositories/usuarioRepository.js";
 import { z } from "zod";
 
 class estacaoService {
-    static async listar(filtro) {
+     async listar(filtro) {
         try {
             const filtroSchema = z.object({
                 id: z.preprocess((val) => Number(val), z.number({
@@ -61,11 +61,10 @@ class estacaoService {
             } else {
                 throw error;
             }
-
         }
     }
 
-    static async inserir(data) {
+     async inserir(data) {
         try {
             const estacaoSchema = z.object({
                 nome: z.string({
@@ -105,7 +104,6 @@ class estacaoService {
                 })
             });
             const estacaoValidated = estacaoSchema.parse(data)
-
             const filtroUsuarioId = { id: estacaoValidated.usuario_id };
             const usuario = await usuarioRepository.findMany(filtroUsuarioId);
             if (usuario.length === 0) throw {
@@ -113,10 +111,22 @@ class estacaoService {
                 code: 400,
                 error: true
             };
+            const estacao = await estacaoRepository.create(estacaoValidated);
+            if (!estacao) throw {
+                message: "Erro ao cadastrar estação",
+                code: 400,
+                error: true
+            };
+            return estacao;
 
         } catch (error) {
             if (error instanceof z.ZodError) {
-                const errorMessages = error.issues.map((issue) => issue.message);
+                const errorMessages = error.issues.map((issue) => {
+                    return {
+                    path: issue.path,
+                    message: issue.message
+                    }
+                });
                 throw {
                     message: errorMessages,
                     code: 400,
@@ -132,15 +142,79 @@ class estacaoService {
         }
     }
 
-    static async atualizar(id, data) {
-        // Regra de negócio e validações
-        return await estacaoRepository.update(id, data);
+     async atualizar(id, data) {
+        try {
+            const estacaoAtualizadaSchema = z.object({
+                nome: z.string({
+                    invalid_type_error: "Nome informado não é do tipo string",
+                }).optional(),
+                endereco: z.string({
+                    invalid_type_error: "Email informado não é do tipo string",
+                }).optional(),
+                latitude: z.preprocess((val) => Number(val), z.number({
+                    invalid_type_error: "Latitude informada não é do tipo number",
+                })).optional(),
+                longitude: z.preprocess((val) => Number(val), z.number({
+                    invalid_type_error: "Longitude informada não é do tipo number",
+                })).optional(),
+                ip: z.string({
+                    invalid_type_error: "IP informado não é do tipo string",
+                }).ip({
+                    message: "Formato de IP inválido"
+                }).optional(),
+                status: z.enum(["ativo", "inativo"], {
+                    invalid_type_error: "Status não é do tipo string",
+                    message: "Status informado não corresponde ao formato indicado (ativo ou inativo)"
+                }).optional(),
+                usuario_id: z.number({
+                    invalid_type_error: "ID não é do tipo number"
+                }).int({
+                    message: "ID não é um tipo inteiro"
+                }).positive({
+                    message: "ID não é um inteiro positivo"
+                }).optional()
+            });
+            const estacaoAtualizadaValidated = estacaoAtualizadaSchema.parse(data)
+            const idEstacao = await estacaoRepository.findMany({id: id});
+            if (idEstacao.length === 0) throw {
+                message: "Estação não encontrada",
+                code: 400,
+                error: true
+            };
+            const response = await estacaoRepository.update(id, estacaoAtualizadaValidated);
+            if (!response) throw {
+                message: "Não foi possível atualizar estação",
+                code: 400,
+                error: true
+            };
+            return response;
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                const errorMessages = error.issues.map((issue) => {
+                    return {
+                    path: issue.path,
+                    message: issue.message
+                    }
+                });
+                throw {
+                    message: errorMessages,
+                    code: 400,
+                    error: true
+                };
+            } else {
+                throw {
+                    message: error,
+                    code: 400,
+                    error: true
+                };
+            }
+        }
     }
 
-    static async deletar(id) {
+     async deletar(id) {
         // Regra de negócio e validações
         return await estacaoRepository.delete(id);
     }
 }
 
-export default estacaoService;
+export default new estacaoService();
