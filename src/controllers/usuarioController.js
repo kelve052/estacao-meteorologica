@@ -96,7 +96,12 @@ class Usuario {
       
             const response = await usuarioService.listar(filtro)
       
-            res.status(200).json(response)
+            res.status(200).json([{
+                message: "Usuários encontrado com sucesso",
+                code: 200,
+                error: false,
+                data: response
+              }])
       
           } catch (error) {
             res.send(error)

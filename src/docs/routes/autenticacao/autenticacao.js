@@ -15,7 +15,7 @@ const autenticacao = {
                 email: { type: "string", example: "fernanda@example.com" },
                 senha: { type: "string", example: "Senha123@" }
               },
-              required: ["email", "password"]
+              required: ["email", "senha"]
             }
           }
         }
@@ -54,7 +54,7 @@ const autenticacao = {
                     {
                       error: { type: "boolean", example: true },
                       code: { type: "int", example: 400 },
-                      message: { type: "string", example: ["Campo email é obrigatório!", "Email invalido!", "Email Não cadastrado!", "Campo senha é obrigatório!", "A senha deve conter pelo menos uma letra minúscula, uma letra maiúscula, um número e um símbolo.", "A senha deve possuir no minimo 8 caracteres!"] }
+                      message: { type: "array", example: ["Campo email é obrigatório!", "Email invalido!", "Email Não cadastrado!", "Campo senha é obrigatório!", "A senha deve conter pelo menos uma letra minúscula, uma letra maiúscula, um número e um símbolo.", "A senha deve possuir no minimo 8 caracteres!"] }
                     }
                   },
                 }

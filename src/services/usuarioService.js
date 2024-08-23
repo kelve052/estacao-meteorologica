@@ -26,7 +26,7 @@ class usuarioService {
             const response = await usuarioRepository.findMany(filtroValidated);
             if (response.length === 0) throw {
                 message: "Nenhum usuário encontrado",
-                code: 400,
+                code: 404,
                 error: true
             }
             return response
