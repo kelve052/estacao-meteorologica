@@ -10,8 +10,8 @@ datasource db {
 model dados_diarios {
   id             Int      @id @default(autoincrement())
   temperature    String?  @db.VarChar(45)
-  humidity       String?  @db.VarChar(45)
-  rainfall       String?  @db.VarChar(45)
+  humidity       Int?
+  rainfall       Int?
   wind_speed_kmh Int?
   data_hora      DateTime @db.Date
 }
