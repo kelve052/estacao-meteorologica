@@ -6,7 +6,7 @@ const router = express.Router()
 
 router.post('/usuario', Usuario.cadastrar);
 router.patch('/usuario/:id', autenticacaoUser, Usuario.atualizar)
-router.delete('/usuario/:id', autenticacaoUser, Usuario.deletar);
+router.delete('/usuario/:idUser', /*autenticacaoUser,*/ Usuario.deletar); // não mudar idUser pois da problema no swegger
 router.get('/usuario', Usuario.listar);
 router.get('/usuario/:id', Usuario.listarPorId);
 

@@ -23,7 +23,7 @@ class UsuarioService {
             }).optional(),
         });
         const filtroValidated = filtroSchema.parse(filtro)
-        const response = await usuarioRepository.findMany(filtroValidated);
+        const response = await UsuarioRepository.findMany(filtroValidated);
         if (response.length === 0) throw {
             message: "Nenhum usuário encontrado",
             code: 404,
@@ -56,7 +56,7 @@ static async listarPorID(id) {
       if (!idusuario) {
         throw new Error("ID invalido")
       } else {
-        return await usuarioRepository.findById(idusuario)
+        return await UsuarioRepository.findById(idusuario)
       }
     }
   }

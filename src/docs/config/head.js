@@ -3,6 +3,7 @@ import usuarioListar from "../routes/usuario/usuarioListar.js";
 import usuarioListarId from "../routes/usuario/usuarioListarID.js";
 import usuarioCadastrar from "../routes/usuario/usuarioCadastrar.js";
 import usuarioAtualizar from "../routes/usuario/usuarioAtualizar.js";
+import usuarioDeletar from "../routes/usuario/usuarioDeletar.js";
 
 
 // Função para definir as URLs do servidor dependendo do ambiente
@@ -53,6 +54,7 @@ const getSwaggerOptions = () => {
         ...usuarioListarId,
         ...usuarioCadastrar,
         ...usuarioAtualizar,
+        ...usuarioDeletar,
 
         
       },

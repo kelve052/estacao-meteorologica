@@ -81,8 +81,6 @@ const usuarioListar = {
             }
           }
         },
-
-        // campo email não informado
         404: {
           content: {
             "application/json": {

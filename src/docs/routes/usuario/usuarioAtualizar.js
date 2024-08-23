@@ -3,7 +3,7 @@
 
 const usuarioAtualizar = {
 
-  // Rota para cadastrar um usuário
+  // Rota para Atualizar um usuário
   "/usuario/{id}/": {
     patch: {
       tags: ["Usuario"],
