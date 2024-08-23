@@ -80,11 +80,7 @@ class Estacao {
         data: response,
       });
     } catch (error) {
-      return res.status(400).json({
-        message: error.message,
-        code: 400,
-        error: true,
-      });
+      return res.status(error.code).json(error);
     }
 
   }
