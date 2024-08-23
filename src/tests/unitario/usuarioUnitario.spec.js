@@ -40,4 +40,11 @@ describe('Service de Usuários', () => {
         // Assert
         expect(usuarios).toEqual(mockUser);
     });
+    
+    test('Deve deletar o usuario', async () => { 
+      const mockUsers = { id: 1, nome: 'Lucas Fernandes ', email:'lucas@example.com'};
+      usuarioRepository.delete.mockResolvedValue(mockUsers);
+      const user = await usuarioService.deletar(1);
+      expect(user).toEqual(mockUsers);
+    });
 });
