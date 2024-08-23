@@ -29,12 +29,12 @@ class UsuarioRepository {
       }
 
     static async create(data) {
-        return await prisma.usuario.create({ data });
+        return await prisma.usuario.create({ data: data });
     }
 
     static async update(id, data) {
         const novId= parseInt(id)
-        return await prisma.usuario.update({ where: {id: novId}, data });
+        return await prisma.usuario.update({ where: {id: novId}, data: data });
     }
 
     static async delete(id) {

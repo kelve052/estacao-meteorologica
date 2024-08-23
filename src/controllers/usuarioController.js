@@ -1,4 +1,3 @@
-import { prisma } from "../configs/prismaClient.js";
 import UsuarioService from "../services/usuarioService.js";
 
 class Usuario {
@@ -98,3 +97,5 @@ class Usuario {
 
 
 export default Usuario;
+
+

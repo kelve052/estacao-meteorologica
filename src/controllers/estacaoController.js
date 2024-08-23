@@ -33,23 +33,8 @@ class Estacao {
   // GET por ID - listar Usuario por ID 
   static listarPorId = async (req, res) => {
     try {
-      const estacao = await prisma.estacao.findFirst({
-        //filtro
-        where: {
-          id: parseInt(req.params.id),
-        },
-        select: {
-          id: true,
-          nome: true,
-          endereco: true,
-          latitude: true,
-          longitude: true,
-          ip: true,
-          status: true,
-          usuario_id: true,
-        }
-      }
-      );
+      let estacao = await estacaoService.listarPorID(req.params.id)
+
       if (!estacao) {
         throw new Error("Estação não encontrada");
       }
@@ -95,11 +80,7 @@ class Estacao {
         data: response,
       });
     } catch (error) {
-      return res.status(400).json({
-        message: error.message,
-        code: 400,
-        error: true,
-      });
+      return res.status(error.code).json(error);
     }
 
   }
@@ -141,41 +122,28 @@ class Estacao {
   };
 
   static deletar = async (req, res) => {
-    const { id } = req.params;
-    const intId = parseInt(id);
     try {
-      const EstacaoById = await prisma.estacao.findUnique({
-        where: {
-          id: intId
-        }
-      })
-      if (!EstacaoById) {
-        res.status(400).json({
-          error: true,
-          code: 400,
-          message: "Estação não encontrada."
-        });
-        return;
-      } else {
-        const deleteEstacao = await prisma.estacao.delete({
-          where: {
-            id: intId
-          },
-        });
-        res.status(200).json({
-          error: false,
-          code: 201,
-          message: 'Estação deletada com sucesso!',
-          data: JSON.parse(deleteEstacao)
-        });
+      if (!req.params.id) {
+        return res.status(400).json([{ error: true, code: 400, message: "ID da estação é obrigatória" }]);
       }
 
-    } catch (error) {
-      res.status(400).json({
-        error: true,
-        code: 400,
-        message: error.message
+      const id = req.params.id;
+
+      const resposta = await estacaoService.deletar(parseInt(id));
+
+      return res.status(200).json({
+        error: false,
+        code: 200,
+        message: "Estação excluída com sucesso",
+        data:resposta
       });
+
+    } catch (error) {
+      if (error.message === 'Estação não encontrada') {
+        return res.status(400).json([{ error: true, code: 400, message: error.message }]);
+      }
+      console.error(err);
+      return res.status(500).json([{ error: true, code: 500, message: "Erro interno do Servidor" }]);
     }
   }
 

@@ -3,7 +3,7 @@ import usuarioRepository from "../repositories/usuarioRepository.js";
 import { z } from "zod";
 
 class estacaoService {
-     async listar(filtro) {
+    async listar(filtro) {
         try {
             const filtroSchema = z.object({
                 id: z.preprocess((val) => Number(val), z.number({
@@ -34,7 +34,7 @@ class estacaoService {
                     invalid_type_error: "Status não é do tipo string",
                     message: "Status informado não corresponde ao formato indicado (ativo ou inativo)"
                 }).optional(),
-                usuario_id: z.preprocess((val) => Number(val), z.number({ 
+                usuario_id: z.preprocess((val) => Number(val), z.number({
                     invalid_type_error: "ID do usuário informado não é do tipo number"
                 }).int({
                     message: "ID do usuário informado não é um número inteiro"
@@ -64,7 +64,7 @@ class estacaoService {
         }
     }
 
-     async inserir(data) {
+    async inserir(data) {
         try {
             const estacaoSchema = z.object({
                 nome: z.string({
@@ -123,8 +123,8 @@ class estacaoService {
             if (error instanceof z.ZodError) {
                 const errorMessages = error.issues.map((issue) => {
                     return {
-                    path: issue.path,
-                    message: issue.message
+                        path: issue.path,
+                        message: issue.message
                     }
                 });
                 throw {
@@ -142,7 +142,7 @@ class estacaoService {
         }
     }
 
-     async atualizar(id, data) {
+    async atualizar(id, data) {
         try {
             const estacaoAtualizadaSchema = z.object({
                 nome: z.string({
@@ -175,7 +175,7 @@ class estacaoService {
                 }).optional()
             });
             const estacaoAtualizadaValidated = estacaoAtualizadaSchema.parse(data)
-            const idEstacao = await estacaoRepository.findMany({id: id});
+            const idEstacao = await estacaoRepository.findMany({ id: id });
             if (idEstacao.length === 0) throw {
                 message: "Estação não encontrada",
                 code: 400,
@@ -192,8 +192,8 @@ class estacaoService {
             if (error instanceof z.ZodError) {
                 const errorMessages = error.issues.map((issue) => {
                     return {
-                    path: issue.path,
-                    message: issue.message
+                        path: issue.path,
+                        message: issue.message
                     }
                 });
                 throw {
@@ -211,7 +211,7 @@ class estacaoService {
         }
     }
 
-     async deletar(id) {
+    async deletar(id) {
         // Regra de negócio e validações
         return await estacaoRepository.delete(id);
     }
