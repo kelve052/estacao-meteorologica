@@ -179,6 +179,7 @@ class usuarioService {
 
             }
 
+            console.log(id)
             return await usuarioRepository.update(id, usuarioValidated);
 
 

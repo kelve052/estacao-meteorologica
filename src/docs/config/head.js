@@ -1,6 +1,8 @@
 import autenticacao from "../routes/autenticacao/autenticacao.js";
 import usuarioListar from "../routes/usuario/usuarioListar.js";
 import usuarioListarId from "../routes/usuario/usuarioListarID.js";
+import usuarioCadastrar from "../routes/usuario/usuarioCadastrar.js";
+import usuarioAtualizar from "../routes/usuario/usuarioAtualizar.js";
 
 
 // Função para definir as URLs do servidor dependendo do ambiente
@@ -48,7 +50,10 @@ const getSwaggerOptions = () => {
       paths: {
         ...autenticacao,
         ...usuarioListar,
-        ...usuarioListarId
+        ...usuarioListarId,
+        ...usuarioCadastrar,
+        ...usuarioAtualizar,
+
         
       },
       components: {
