@@ -24,7 +24,7 @@ class UsuarioService {
                 }).optional(),
             });
             const filtroValidated = filtroSchema.parse(filtro)
-            const response = await usuarioRepository.findMany(filtroValidated);
+            const response = await UsuarioRepository.findMany(filtroValidated);
             if (response.length === 0) throw {
                 message: "Nenhum usuário encontrado",
                 code: 400,
@@ -57,7 +57,7 @@ class UsuarioService {
             if (!idusuario) {
                 throw new Error("ID invalido")
             } else {
-                return await usuarioRepository.findById(idusuario)
+                return await UsuarioRepository.findById(idusuario)
             }
         }
     }
@@ -91,11 +91,11 @@ class UsuarioService {
                     }
                 )
             })
-            const usuarioValidated = validacao.required().parse(data)
+            const usuarioValidated = validacao.parse(data)
+
             //  verificação do email repitido
             const emailRepetido = await UsuarioRepository.findMany({ email: data.email })
-            console.log(emailRepetido)
-            if (!emailRepetido.length == 0) {
+            if (emailRepetido) {
                 throw {
                     message: "Email Já Cadastrado!",
                     code: 400,
@@ -160,7 +160,7 @@ class UsuarioService {
                 )
             })
 
-            const usuarioValidated = validacao.required().parse(data)
+            const usuarioValidated = validacao.parse(data)
 
             //  hash senha
             const hashSenha = await Hashsenha.criarHashSenha(data.senha)
@@ -169,8 +169,8 @@ class UsuarioService {
             //  verificação do email repitido
             const emailRepetido = await UsuarioRepository.findMany({ email: data.email })
 
-            if (!emailRepetido.length == 0) {
-                if (id != emailRepetido[0].id) {
+            if (!emailRepetido) {
+                if (id != emailRepetido.id) {
                     throw {
                         message: "Email Já Cadastrado!",
                         code: 400,

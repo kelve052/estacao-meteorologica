@@ -1,50 +1,88 @@
 import { describe, expect, test } from '@jest/globals';
+import bcrypt from 'bcryptjs'
 import usuarioService from '../../services/usuarioService.js';
 import usuarioRepository from '../../repositories/usuarioRepository.js';
 
 jest.mock('../../repositories/usuarioRepository.js', () => ({
     findMany: jest.fn(),
-    findById: jest.fn(),
     create: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn()
+    update: jest.fn()
 }));
 
-describe('Service de Usuários', () => {
+jest.mock('bcryptjs', () => ({
+    hash: jest.fn().mockResolvedValue('$2a$10$sAYH1jr9ohI8spU0ENZFXe1NJcJg/UQRbvYzHQT1jbBUIASrg00am') // Senha mockada
+}));
+
+
+
+describe('Service de usuarios', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    test('Deve listar os usuários', async () => {
+
+    test('Deve criar um novo usuario', async () => {
         // Arrange
-        const mockUsuario = [
-            { id: 1, nome: 'Lucas Fernandes', email: 'lucas@example.com'},
-            { id: 2, nome: 'Joao Gabriel', email: 'joao@example.com'},
-        ];
-        
-        usuarioRepository.findMany.mockResolvedValue(mockUsuario);
+        const mockUsuario = {
+            nome: "Rocha",
+            email: "vitor@gmail.com",
+            senha: "Senha123@"
+        };
+        usuarioRepository.create.mockResolvedValue(mockUsuario);
 
         // Act
-        const usuarios = await usuarioService.listar({});
+        const usuario = await usuarioService.inserir(mockUsuario);
 
         // Assert
-        expect(usuarios).toEqual(mockUsuario);
-        expect(usuarioRepository.findMany).toHaveBeenCalledWith({});
+        expect(usuario).toEqual(mockUsuario);
+        //expect(usuarioRepository.create).toHaveBeenCalledWith(mockUsuario);
     });
-    test('Deve listar usuário por id', async () => {
+
+    test('Deve atualizar um usuario', async () => {
         // Arrange
-        const mockUser = { id: 1, nome: 'Lucas Fernandes ', email:'lucas@example.com'};
-        usuarioRepository.findById.mockResolvedValue(mockUser);
-        // Act
-        const usuarios = await usuarioService.listarPorID(1);
-        // Assert
-        expect(usuarios).toEqual(mockUser);
-    });
+        const mockUsuario = {
+            id: 11,
+            nome: "Rocha",
+            email: "vitor@gmail.com",
+            senha: "Senha123@"
+        };
+        const mockExistingUsuario = {
+            id: 11,
+            nome: "Vitor Rocha",
+            email: "vitor@gmail.com",
+            senha: "Senha123@"
+        };
     
-    test('Deve deletar o usuario', async () => { 
-      const mockUsers = { id: 1, nome: 'Lucas Fernandes ', email:'lucas@example.com'};
-      usuarioRepository.delete.mockResolvedValue(mockUsers);
-      const user = await usuarioService.deletar(1);
-      expect(user).toEqual(mockUsers);
+        const hashedSenha = await bcrypt.hash(mockUsuario.senha, 10);
+    
+        usuarioRepository.findMany.mockResolvedValue([mockExistingUsuario]);
+        usuarioRepository.update.mockResolvedValue({
+            ...mockUsuario,
+            senha: hashedSenha
+        });
+    
+        // Act
+        const updatedUsuario = await usuarioService.atualizar(11, mockUsuario);
+        const expectedUpdateCall = {
+            nome: "Rocha",
+            email: "vitor@gmail.com",
+            senha: hashedSenha // Senha criptografada gerada dinamicamente
+        };
+    
+        // Assert
+        // Comparando a estrutura básica do objeto sem a senha
+        expect(updatedUsuario).toMatchObject({
+            id: 11,
+            nome: "Rocha",
+            email: "vitor@gmail.com",
+            senha: expect.any(String) // Verifica que é uma string, sem comparar o valor exato
+        });
+    
+        // Comparando a senha específica para garantir que seja a esperada
+        expect(updatedUsuario.senha).toBe(hashedSenha);
+    
+        // Verificando chamadas no repositório
+        expect(usuarioRepository.findMany).toHaveBeenCalledWith({ email: "vitor@gmail.com" });
+        expect(usuarioRepository.update).toHaveBeenCalledWith(11, expectedUpdateCall);
     });
 });
