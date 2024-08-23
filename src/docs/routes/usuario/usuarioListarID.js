@@ -3,45 +3,25 @@
 
 const usuarioListarId = {
 
-    //get
-    "/usuario": {
+    //getId
+    "/usuario/{id}": {
       get: {
-        tags: ["Auth"],
-        summary: "Lista todos os usuários cadastrados",
+        tags: ["Usuario"],
+        summary: "Lista o usuário pelo ID",
         parameters: [
           {
-            name: "email",
-            in: "query",
-            description: "Email do usuário",
-            required: false,
-            schema: {
-              type: "string",
-              example: "fernanda@example.com"
-            }
-          },
-          {
-            name: "nome",
-            in: "query",
-            description: "Nome do usuário",
-            required: false,
-            schema: {
-              type: "string",
-              example: "Fernanda"
-            }
-          },
-          {
-            name: "id",
-            in: "query",
-            description: "ID do usuário",
-            required: false,
-            schema: {
-              type: "string",
-              example: "12345"
-            }
+              name: "id",
+              in: "path",
+              description: "ID do usuário",
+              required: true,
+              schema: {
+                  type: "integer",
+                  example: 9
+              }
           }
-        ],
+      ],
         responses: {
-          201: {
+          200: {
             content: {
               "application/json": {
                 schema: {
@@ -55,26 +35,11 @@ const usuarioListarId = {
                                 "id": 1,
                                 "nome": "usuario Atualizado",
                                 "email": "vitorgabriel123@gmail.com"
-                              },
-                              {
-                                "id": 2,
-                                "nome": "Ana Pereira",
-                                "email": "ana@example.com"
-                              },
-                              {
-                                "id": 3,
-                                "nome": "vitorag",
-                                "email": "5vitorgabrielvha3@gmail.com"
-                              },
-                              {
-                                "id": 4,
-                                "nome": "Maria Oliveira",
-                                "email": "maria@example.com"
                               }
                         ]},
                         error: { type: "boolean", example: false },
                         code: { type: "int", example: 200 },
-                        message: { type: "string", example: "Usuários encontrado com sucesso" }
+                        message: { type: "string", example: "Usuário encontrado com sucesso" }
                       }
                     },
                   }
@@ -95,7 +60,7 @@ const usuarioListarId = {
                       {
                         error: { type: "boolean", example: true },
                         code: { type: "int", example: 404 },
-                        message: { type: "array", example: ["Nenhum usuário encontrado"] }
+                        message: { type: "array", example: ["ID invalido"] }
                       }
                     },
                   }
@@ -114,7 +79,7 @@ const usuarioListarId = {
                       {
                         error: { type: "boolean", example: true },
                         code: { type: "int", example: 400 },
-                        message: { type: "array", example: ["ID informado não é do tipo number", "ID informado não é um número inteiro", "ID informado não é positivo", "Nome informado não é do tipo string", "O Email tem que ser String", "Email invalido!"] }
+                        message: { type: "array", example: ["Usuário não encontrado"] }
                       }
                     },
                   }
@@ -124,12 +89,6 @@ const usuarioListarId = {
           },
         }
       }
-    },
-
-
-    //getId
-    "/usuario/:id": {
-        
     }
   };
   

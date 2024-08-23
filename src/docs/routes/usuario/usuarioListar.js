@@ -6,7 +6,7 @@ const usuarioListar = {
     //get
     "/usuario": {
       get: {
-        tags: ["Auth"],
+        tags: ["Usuario"],
         summary: "Lista todos os usuários cadastrados",
         parameters: [
           {

@@ -9,7 +9,7 @@ class usuarioRepository {
                     id: true,
                     nome:true,
                     email:true,
-                    senha:false
+                    senha:true
                 }
             });
         } catch (error) {
@@ -23,7 +23,7 @@ class usuarioRepository {
                 id: true,
                 nome:true,
                 email:true,
-                senha:false
+                senha:true
             }
             });
       }

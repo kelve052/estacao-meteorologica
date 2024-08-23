@@ -1,5 +1,7 @@
 import autenticacao from "../routes/autenticacao/autenticacao.js";
 import usuarioListar from "../routes/usuario/usuarioListar.js";
+import usuarioListarId from "../routes/usuario/usuarioListarID.js";
+
 
 // Função para definir as URLs do servidor dependendo do ambiente
 const getServersInCorrectOrder = () => {
@@ -27,11 +29,11 @@ const getSwaggerOptions = () => {
       servers: getServersInCorrectOrder(),
       tags: [
         {
-          name: "Auth",
+          name: "Autenticacao",
           description: "Rota para autenticação"
         },
         {
-          name: "Usuários",
+          name: "Usuario",
           description: "Rotas para gestão de usuários"
         },
         {
@@ -45,7 +47,9 @@ const getSwaggerOptions = () => {
       ],
       paths: {
         ...autenticacao,
-        ...usuarioListar
+        ...usuarioListar,
+        ...usuarioListarId
+        
       },
       components: {
         securitySchemes: {

@@ -7,11 +7,12 @@ const app = express();
 
 
 app.use(cors({
-    origin: 'http://localhost:7001', // Permitir requisições da aplicação rodando em localhost:3000
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Métodos permitidos
-    allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
+    origin: '*', // Permitir requisições da aplicação rodando em localhost:3000
+    methods: ['GET', 'POST', 'PUT', 'PATCH','DELETE', 'OPTIONS'], // Métodos permitidos
+    allowedHeaders: ['Content-Type', 'Authorization', "application/json"], // Cabeçalhos permitidos
     credentials: true // Permitir envio de cookies ou headers de autenticação
 }));
+
 
 app.use(express.json());
 routes(app);

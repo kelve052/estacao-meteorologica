@@ -86,7 +86,11 @@ class AutenticacaoServices {
           error: true
       };
       } else {
-        throw error
+        throw {
+          message: error.message,
+          code: 400,
+          error: true
+      }
       }
     }
   }
