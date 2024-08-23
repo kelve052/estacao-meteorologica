@@ -38,7 +38,7 @@ class Usuario {
 
     static deletar = async (req, res) => {
         try{
-          const id = parseInt(req.params.id)
+          const id = parseInt(req.params.idUser) // não mudar idUser porque da problema no swegger
           await UsuarioService.deletar(id)
           res.status(204).json()
          // a rota deletar só retorna o code: 204, não deve retornar mensagens e outras coisas
@@ -56,9 +56,14 @@ class Usuario {
               email: email
             }
       
-            const response = await usuarioService.listar(filtro)
+            const response = await UsuarioService.listar(filtro)
       
-            res.status(200).json(response)
+            res.status(200).json([{
+                message: "Usuários encontrado com sucesso",
+                code: 200,
+                error: false,
+                data: response
+              }])
       
           } catch (error) {
             res.send(error)
@@ -67,7 +72,7 @@ class Usuario {
         static listarPorId = async (req, res) => {
             try {
               const id = req.params.id
-              let usuario = await usuarioService.listarPorID(id)
+              let usuario = await UsuarioService.listarPorID(id)
         
               if (!usuario) {
                 throw new Error("Usuário não encontrado");

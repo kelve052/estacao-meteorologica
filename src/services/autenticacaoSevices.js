@@ -17,7 +17,9 @@ class AutenticacaoServices {
         senha: z.string({
           required_error: 'Campo senha é obrigatório!',
           invalid_type_error: 'Formato da senha invalido, deve ser string!'
-        }).min(8).refine(
+        }).min(8, {
+          message: "A senha deve possuir no minimo 8 caracteres!"
+        }).refine(
           (value) =>
             /[a-z]/.test(value) &&  // Tem pelo menos uma letra minúscula
             /[A-Z]/.test(value) &&  // Tem pelo menos uma letra maiúscula
@@ -84,7 +86,11 @@ class AutenticacaoServices {
           error: true
       };
       } else {
-        throw error
+        throw {
+          message: error.message,
+          code: 400,
+          error: true
+      }
       }
     }
   }

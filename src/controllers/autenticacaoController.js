@@ -8,7 +8,7 @@ class Autenticacao {
       const data = { email, senha }
       const response = await AutenticacaoServices.criarToken(data)
 
-      res.status(201).json({
+      return res.status(201).json({
         error: false,
         code: 201,
         message: 'Token gerado com sucesso!',
@@ -16,7 +16,7 @@ class Autenticacao {
         data: null
       })
     } catch (error) {
-      res.status(error.code).json(error)
+      return res.status(error.code).json(error)
     }
 
   }

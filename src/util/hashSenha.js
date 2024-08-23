@@ -6,7 +6,7 @@ class Hashsenha {
         return hashedPassword
     }
 
-    static compararSenha = async (senha,hash) => {
+    static compararSenha = async (senha, hash) => {
         const passwordMatch = await bcrypt.compare(senha, hash);
         return passwordMatch
         
