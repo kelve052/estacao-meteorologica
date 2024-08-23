@@ -34,6 +34,7 @@ class Estacao {
   static listarPorId = async (req, res) => {
     try {
       let estacao = await estacaoService.listarPorID(req.params.id)
+      console.log(req.params.id)
 
       if (!estacao) {
         throw new Error("Estação não encontrada");
@@ -47,7 +48,7 @@ class Estacao {
     } catch (err) {
       console.error(err);
       res.status(400).json([{
-        message: err,
+        message: err.message,
         code: 400,
         error: true
       }])
@@ -121,31 +122,31 @@ class Estacao {
     }
   };
 
-  static deletar = async (req, res) => {
-    try {
-      if (!req.params.id) {
-        return res.status(400).json([{ error: true, code: 400, message: "ID da estação é obrigatória" }]);
-      }
+//   static deletar = async (req, res) => {
+//     try {
+//       if (!req.params.id) {
+//         return res.status(400).json([{ error: true, code: 400, message: "ID da estação é obrigatória" }]);
+//       }
 
-      const id = req.params.id;
+//       const id = req.params.id;
 
-      const resposta = await estacaoService.deletar(parseInt(id));
+//       const resposta = await estacaoService.deletar(parseInt(id));
 
-      return res.status(200).json({
-        error: false,
-        code: 200,
-        message: "Estação excluída com sucesso",
-        data:resposta
-      });
+//       return res.status(200).json({
+//         error: false,
+//         code: 200,
+//         message: "Estação excluída com sucesso",
+//         data:resposta
+//       });
 
-    } catch (error) {
-      if (error.message === 'Estação não encontrada') {
-        return res.status(400).json([{ error: true, code: 400, message: error.message }]);
-      }
-      console.error(err);
-      return res.status(500).json([{ error: true, code: 500, message: "Erro interno do Servidor" }]);
-    }
-  }
+//     } catch (error) {
+//       if (error.message === 'Estação não encontrada') {
+//         return res.status(400).json([{ error: true, code: 400, message: error.message }]);
+//       }
+//       console.error(err);
+//       return res.status(500).json([{ error: true, code: 500, message: "Erro interno do Servidor" }]);
+//     }
+//   }
 
 }
 

@@ -4,6 +4,10 @@ import usuarioListarId from "../routes/usuario/usuarioListarID.js";
 import usuarioCadastrar from "../routes/usuario/usuarioCadastrar.js";
 import usuarioAtualizar from "../routes/usuario/usuarioAtualizar.js";
 import usuarioDeletar from "../routes/usuario/usuarioDeletar.js";
+import estacaoListar from "../routes/estacao/estacaoListar.js";
+import estacaoListarId from "../routes/estacao/estacaoListarID.js";
+import estacaoAtualizar from "../routes/estacao/estacaoAtualizar.js";
+import estacoeCadastrar from "../routes/estacao/estacaoCadastrar.js";
 
 
 // Função para definir as URLs do servidor dependendo do ambiente
@@ -40,7 +44,7 @@ const getSwaggerOptions = () => {
           description: "Rotas para gestão de usuários"
         },
         {
-          name: "Estação",
+          name: "Estacao",
           description: "Rotas para gestão de estação"
         },
         {
@@ -49,12 +53,21 @@ const getSwaggerOptions = () => {
         },
       ],
       paths: {
+        //auteticaocao
         ...autenticacao,
+
+        //usuario
         ...usuarioListar,
         ...usuarioListarId,
         ...usuarioCadastrar,
         ...usuarioAtualizar,
         ...usuarioDeletar,
+
+        //estacao
+        ...estacaoListar,
+        ...estacaoListarId,
+        ...estacoeCadastrar,
+        ...estacaoAtualizar
 
         
       },
