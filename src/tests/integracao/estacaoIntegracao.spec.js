@@ -136,37 +136,77 @@ describe("Atualizar estação", () => {
 
         expect(response.status).toBe(200);
         expect(body.response).toBeInstanceOf(Array);
-        idvalido=body.response[0].id;
+        idvalido = body.response[0].id;
     });
-    
+
     it('Listar estação por ID valido', async () => {
-      const response = await request(app)
-          .get(`/estacoes/${idvalido}`)
-          .set("Authorization", `Bearer ${token}`)
-          .set("Content-Type", "application/json")
+        const response = await request(app)
+            .get(`/estacoes/${idvalido}`)
+            .set("Authorization", `Bearer ${token}`)
+            .set("Content-Type", "application/json")
         //testando a resposta
-      expect(response.status).toBe(200);
-      // testando se esta retornando o id esperado
-      expect({id: idvalido}).toHaveProperty('id', idvalido);
-      //testando se retorna json
-      expect(response.headers['content-type']).toContain('json');
-      //testando a resposta response.body é uma instancia de um objeto
-      expect(response.body).toBeInstanceOf(Array);
-    }); 
+        expect(response.status).toBe(200);
+        // testando se esta retornando o id esperado
+        expect({ id: idvalido }).toHaveProperty('id', idvalido);
+        //testando se retorna json
+        expect(response.headers['content-type']).toContain('json');
+        //testando a resposta response.body é uma instancia de um objeto
+        expect(response.body).toBeInstanceOf(Array);
+    });
     it('Deve retornar erro ao listar estação com id invalido', async () => {
-      const idinvalido = "9999";
-      const response = await request(app)
-          .get(`/estacoes/${idinvalido}`)
-          .set("Authorization", `Bearer ${token}`)
-          .set("Content-Type", "application/json")
+        const idinvalido = "9999";
+        const response = await request(app)
+            .get(`/estacoes/${idinvalido}`)
+            .set("Authorization", `Bearer ${token}`)
+            .set("Content-Type", "application/json")
         //testando a resposta
         expect(response.status).toBe(400);
         //testando se retorna json
         expect(response.headers['content-type']).toContain('json');
         //testando se retorna o motivo do erro
-        expect({message: 'Estação não encontrada'}).toHaveProperty('message', "Estação não encontrada");
+        expect({ message: 'Estação não encontrada' }).toHaveProperty('message', "Estação não encontrada");
         //testando se o erro esta ativo
-        expect({error: true}).toHaveProperty('error', true);
-  });
+        expect({ error: true }).toHaveProperty('error', true);
+    });
 });
+
+// ----------- Deletar Estação ---------
+
+describe("Deletar estação", () => {
+    it('deve deletar a estação com id valido', async () => {
+        const id = "10";
+        const response = await request(app)
+            .get(`/estacoes/${id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .set("Content-Type", "application/json")
+        //testando a resposta
+        expect(response.status).toBe(200);
+        //testando se retorna json
+        expect(response.headers['content-type']).toContain('json');
+        //testando a resposta response.body é uma instancia de um objeto
+        expect(response.body).toBeInstanceOf(Array);
+        //testando se o erro é falso
+        expect({ error: false }).toHaveProperty('error', false);
+        //testando a mensagem de retorno
+        expect({ message: 'Estação excluída com sucesso' }).toHaveProperty('message', "Estação excluída com sucesso");
+    })
+    it('deve retornar erro com o id invalido', async () => {
+        const id = "999999";
+        const response = await request(app)
+            .get(`/estacoes/${id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .set("Content-Type", "application/json")
+        //testando a resposta
+        expect(response.status).toBe(400);
+        //testando se retorna json
+        expect(response.headers['content-type']).toContain('json');
+        //testando a resposta response.body é uma instancia de um objeto
+        expect(response.body).toBeInstanceOf(Array);
+        //testando se o erro é true
+        expect({ error: true }).toHaveProperty('error', true);
+        //testando a mensagem de retorno
+        expect({ message: 'Estação não encontrada' }).toHaveProperty('message', "Estação não encontrada");
+    })
+});
+
 
