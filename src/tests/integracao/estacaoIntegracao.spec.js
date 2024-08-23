@@ -6,8 +6,9 @@ import app from "../../app.js";
 // Apenas para teste depois irei refatorar
 // ---------------- Login ----------------
 let token;
+let idvalido;
 
-it.skip('Login com autenticação jwt', async () => {
+it('Login com autenticação jwt', async () => {
     const response = await request(app)
         .post("/autenticacao")
         .send({
@@ -20,7 +21,7 @@ it.skip('Login com autenticação jwt', async () => {
 
 // ----------- Cadastrar Estação ---------
 
-describe.skip("Cadastrar estação", () => {
+describe("Cadastrar estação", () => {
     it('Deve cadastrar uma estação com dados válidos', async () => {
         const response = await request(app)
             .post('/estacoes')
@@ -80,7 +81,7 @@ describe.skip("Cadastrar estação", () => {
 
 // ----------- Atualizar Estação ---------
 
-describe.skip("Atualizar estação", () => {
+describe("Atualizar estação", () => {
     it('Atualização dos dados de uma estação', async () => {
         const updatedData = {
             nome: "Estação Atualizada 2.0",
@@ -135,7 +136,37 @@ describe.skip("Atualizar estação", () => {
 
         expect(response.status).toBe(200);
         expect(body.response).toBeInstanceOf(Array);
+        idvalido=body.response[0].id;
     });
+    
+    it('Listar estação por ID valido', async () => {
+      const response = await request(app)
+          .get(`/estacoes/${idvalido}`)
+          .set("Authorization", `Bearer ${token}`)
+          .set("Content-Type", "application/json")
+        //testando a resposta
+      expect(response.status).toBe(200);
+      // testando se esta retornando o id esperado
+      expect({id: idvalido}).toHaveProperty('id', idvalido);
+      //testando se retorna json
+      expect(response.headers['content-type']).toContain('json');
+      //testando a resposta response.body é uma instancia de um objeto
+      expect(response.body).toBeInstanceOf(Array);
+    }); 
+    it('Deve retornar erro ao listar estação com id invalido', async () => {
+      const idinvalido = "9999";
+      const response = await request(app)
+          .get(`/estacoes/${idinvalido}`)
+          .set("Authorization", `Bearer ${token}`)
+          .set("Content-Type", "application/json")
+        //testando a resposta
+        expect(response.status).toBe(400);
+        //testando se retorna json
+        expect(response.headers['content-type']).toContain('json');
+        //testando se retorna o motivo do erro
+        expect({message: 'Estação não encontrada'}).toHaveProperty('message', "Estação não encontrada");
+        //testando se o erro esta ativo
+        expect({error: true}).toHaveProperty('error', true);
+  });
 });
-
 
