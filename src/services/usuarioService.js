@@ -24,6 +24,7 @@ class UsuarioService {
                 }).optional(),
             });
             const filtroValidated = filtroSchema.parse(filtro)
+
             const response = await UsuarioRepository.findMany(filtroValidated);
             if (response.length === 0) throw {
                 message: "Nenhum usuário encontrado",
@@ -129,22 +130,23 @@ class UsuarioService {
     }
 
     static async atualizar(id, data) {
+        console.log(data)
         try {
             const validacao = z.object({
                 nome: z.string({
-                    required_error: "Campo Nome É Obrigatório!",
+                    // required_error: "Campo Nome É Obrigatório!",
                     invalid_type_error: "O nome tem que ser String"
                 }).min(3, {
                     message: "O Nome Deve Conter Pelo Menos 3 Letras!"
-                }),
+                }).optional(),
                 email: z.string({
-                    required_error: "Campo Email É Obrigatório!",
+                    // required_error: "Campo Email É Obrigatório!",
                     invalid_type_error: "O Email Tem Que Ser String"
                 }).email({
                     message: "Email Invalido!"
-                }),
+                }).optional(),
                 senha: z.string({
-                    required_error: "Campo Senha É Obrigatório!",
+                    // required_error: "Campo Senha É Obrigatório!",
                     invalid_type_error: "O Senha Tem Que Ser String"
                 }).min(8, {
                     message: "A senha deve conter pelo menos 8 caracteres, uma letra minúscula, uma letra maiúscula, um número e um símbolo.",
@@ -157,34 +159,44 @@ class UsuarioService {
                     {
                         message: "A senha deve conter pelo menos 8 caracteres, uma letra minúscula, uma letra maiúscula, um número e um símbolo.",
                     }
-                )
+                ).optional()
             })
 
             const usuarioValidated = validacao.parse(data)
 
-            //  hash senha
-            const hashSenha = await Hashsenha.criarHashSenha(data.senha)
-            usuarioValidated.senha = hashSenha
+            if (usuarioValidated.senha != undefined) {
+                //  hash senha
+                const hashSenha = await Hashsenha.criarHashSenha(data.senha)
+                usuarioValidated.senha = hashSenha
+            }
 
-            //  verificação do email repitido
-            const emailRepetido = await UsuarioRepository.findMany({ email: data.email })
+            if (usuarioValidated.email != undefined) {
+                //  verificação do email repitido
+                const emailRepetido = await UsuarioRepository.findMany({ email: data.email })
 
-            if (!emailRepetido) {
-                if (id != emailRepetido.id) {
-                    throw {
-                        message: "Email Já Cadastrado!",
-                        code: 400,
-                        error: true
+                if (!emailRepetido) {
+                    if (id != emailRepetido.id) {
+                        throw {
+                            message: "Email Já Cadastrado!",
+                            code: 400,
+                            error: true
+                        }
                     }
                 }
-
             }
+
+
 
             return await UsuarioRepository.update(id, usuarioValidated);
 
         } catch (error) {
             if (error instanceof z.ZodError) {
-                const errorMessages = error.issues.map((issue) => issue.message);
+                const errorMessages = error.issues.map((issue) => {
+                    return {
+                        message: issue.message,
+                        path: issue.path
+                    }
+                });
                 console.log(errorMessages)
                 throw {
                     message: errorMessages,

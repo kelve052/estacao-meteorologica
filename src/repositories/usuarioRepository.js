@@ -7,9 +7,9 @@ class UsuarioRepository {
                 where: filtros,
                 select: {
                     id: true,
-                    nome:true,
-                    email:true,
-                    senha:false
+                    nome: true,
+                    email: true,
+                    senha: true
                 }
             });
         } catch (error) {
@@ -18,23 +18,23 @@ class UsuarioRepository {
     }
     static async findById(id) {
         return await prisma.usuario.findUnique({
-             where: {id} ,
-             select: {
+            where: { id: id },
+            select: {
                 id: true,
-                nome:true,
-                email:true,
-                senha:false
+                nome: true,
+                email: true,
+                senha: false
             }
-            });
-      }
+        });
+    }
 
     static async create(data) {
         return await prisma.usuario.create({ data: data });
     }
 
     static async update(id, data) {
-        const novId= parseInt(id)
-        return await prisma.usuario.update({ where: {id: novId}, data: data });
+        const novId = parseInt(id)
+        return await prisma.usuario.update({ where: { id: novId }, data: data });
     }
 
     static async delete(id) {

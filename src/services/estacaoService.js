@@ -43,6 +43,7 @@ class estacaoService {
                 })).optional(),
             });
             const filtroValidated = filtroSchema.parse(filtro)
+            console.log(filtroValidated)
             const response = await estacaoRepository.findMany(filtroValidated);
             if (response.length === 0) throw {
                 message: "Nenhuma estação encontrada",

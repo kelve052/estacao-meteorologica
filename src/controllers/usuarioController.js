@@ -56,7 +56,7 @@ class Usuario {
               email: email
             }
       
-            const response = await usuarioService.listar(filtro)
+            const response = await UsuarioService.listar(filtro)
       
             res.status(200).json(response)
       
@@ -67,7 +67,7 @@ class Usuario {
         static listarPorId = async (req, res) => {
             try {
               const id = req.params.id
-              let usuario = await usuarioService.listarPorID(id)
+              let usuario = await UsuarioService.listarPorID(id)
         
               if (!usuario) {
                 throw new Error("Usuário não encontrado");
