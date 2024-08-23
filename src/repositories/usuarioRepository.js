@@ -4,12 +4,29 @@ class usuarioRepository {
     static async findMany(filtros) {
         try {
             return await prisma.usuario.findMany({
-                where: filtros
+                where: filtros,
+                select: {
+                    id: true,
+                    nome:true,
+                    email:true,
+                    senha:false
+                }
             });
         } catch (error) {
             throw error
         }
     }
+    static async findById(id) {
+        return await prisma.usuario.findUnique({
+             where: {id} ,
+             select: {
+                id: true,
+                nome:true,
+                email:true,
+                senha:false
+            }
+            });
+      }
 
     static async create(data) {
         return await prisma.usuario.create({ data });

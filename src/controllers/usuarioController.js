@@ -1,4 +1,3 @@
-import { response } from "express";
 import { prisma } from "../configs/prismaClient.js";
 import usuarioService from "../services/usuarioService.js";
 
@@ -84,6 +83,49 @@ class Usuario {
             });
         }
     }
-}
+    static listar = async (req, res) => {
+        try {
+            const { id, nome, email } = req.query;
+      
+            const filtro = {
+              id: id,
+              nome: nome,
+              email: email
+            }
+      
+            const response = await usuarioService.listar(filtro)
+      
+            res.status(200).json(response)
+      
+          } catch (error) {
+            res.send(error)
+          }
+        }
+        static listarPorId = async (req, res) => {
+            try {
+              const id = req.params.id
+              let usuario = await usuarioService.listarPorID(id)
+        
+              if (!usuario) {
+                throw new Error("Usuário não encontrado");
+              }
+              res.status(200).json([{
+                message: "Usuário encontrado com sucesso",
+                code: 200,
+                error: false,
+                data: usuario
+              }])
+            } catch (err) {
+              
+              res.status(400).json([{
+                message: err.message,
+                code: 400,
+                error: true
+              }])
+            }
+          }
+    }
+    
+
 
 export default Usuario;
