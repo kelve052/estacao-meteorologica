@@ -8,6 +8,8 @@ import estacaoListar from "../routes/estacao/estacaoListar.js";
 import estacaoListarId from "../routes/estacao/estacaoListarID.js";
 import estacaoAtualizar from "../routes/estacao/estacaoAtualizar.js";
 import estacoeCadastrar from "../routes/estacao/estacaoCadastrar.js";
+import dadosCadastrar from "../routes/dados/dadosCadastrar.js";
+import dadosListar from "../routes/dados/dadosListar.js";
 
 
 // Função para definir as URLs do servidor dependendo do ambiente
@@ -67,9 +69,11 @@ const getSwaggerOptions = () => {
         ...estacaoListar,
         ...estacaoListarId,
         ...estacoeCadastrar,
-        ...estacaoAtualizar
+        ...estacaoAtualizar,
 
-        
+        //dados
+        ...dadosListar,
+        ...dadosCadastrar,
       },
       components: {
         securitySchemes: {
