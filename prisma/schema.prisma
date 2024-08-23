@@ -26,15 +26,6 @@ model estacao {
   status     String? @db.VarChar(45)
   usuario_id Int
   usuario    usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade, map: "fk_estacao_usuario")
-  id         Int     @id @default(autoincrement())
-  nome       String? @db.VarChar(45)
-  endereco   String? @db.VarChar(45)
-  latitude   Float?
-  longitude  Float?
-  ip         String? @db.VarChar(45)
-  status     String? @db.VarChar(45)
-  usuario_id Int
-  usuario    usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade, map: "fk_estacao_usuario")
 
   @@index([usuario_id], map: "fk_estacao_usuario")
 }

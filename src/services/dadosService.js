@@ -8,17 +8,17 @@ class dadosService {
                 temperature: z.string({
                     invalid_type_error: "Temperatura informada não é do tipo string"
                 }).optional(),
-                humidity: z.string({
-                    invalid_type_error: "Umidade informada não é do tipo string"
+                humidity: z.number({
+                    invalid_type_error: "Umidade informada não é do tipo number"
                 }).optional(),
-                rainfall: z.string({
-                    invalid_type_error: "Pluviosidade informada não é do tipo string"
+                rainfall: z.number({
+                    invalid_type_error: "Pluviosidade informada não é do tipo number"
                 }).optional(),
                 wind_speed_kmh: z.number({
-                    invalid_type_error: "Velocidade do vento informada não é do tipo int"
+                    invalid_type_error: "Velocidade do vento informada não é do tipo number"
                 }).optional(),
                 data_hora: z.date({
-                    invalid_type_error: "Data informada não é do tipo string"
+                    invalid_type_error: "Data informada não é do tipo string/data"
                 }).optional(),
             });
             const filtroValidated = filtroSchema.parse(filtro)
@@ -39,7 +39,11 @@ class dadosService {
                     error: true
                 };
             } else {
-                throw error;
+              throw {
+                message: error.message,
+                code: 400,
+                error: true
+            }
             }
         }
     }
@@ -49,11 +53,11 @@ class dadosService {
                 temperature: z.string({
                     invalid_type_error: "Temperatura informada não é do tipo string"
                 }).nullable(),
-                humidity: z.string({
-                    invalid_type_error: "Umidade informada não é do tipo string"
+                humidity: z.number({
+                    invalid_type_error: "Umidade informada não é do tipo number"
                 }).nullable(),
-                rainfall: z.string({
-                    invalid_type_error: "Pluviosidade informada não é do tipo string"
+                rainfall: z.number({
+                    invalid_type_error: "Pluviosidade informada não é do tipo number"
                 }).nullable(),
                 wind_speed_kmh: z.number({
                     invalid_type_error: "Velocidade do vento informada não é do tipo int"

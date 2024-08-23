@@ -3,8 +3,23 @@ import dadosService from "../services/dadosService.js";
 class Dados {
     static async listar(req, res) {
         try {
-            const { temperature, humidity, rainfall, wind_speed_kmh, data_hora } = req.query;
+            let { temperature, humidity, rainfall, wind_speed_kmh, data_hora } = req.query;
 
+            if(humidity){
+              humidity = parseInt(humidity)
+            }
+
+            if(rainfall){
+              rainfall = parseInt(rainfall)
+            }
+
+            if(wind_speed_kmh){
+              wind_speed_kmh = parseInt(wind_speed_kmh)
+            }
+
+            if(data_hora){
+              data_hora = new Date(data_hora)
+            }
             const filtro = {
                 temperature: temperature,
                 humidity: humidity,
@@ -12,7 +27,7 @@ class Dados {
                 wind_speed_kmh: wind_speed_kmh,
                 data_hora: data_hora,
             }
-
+            
             const response = await dadosService.listar(filtro)
 
             res.status(200).json(response)
