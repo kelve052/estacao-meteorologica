@@ -1,4 +1,4 @@
-import usuarioRepository from '../repositories/usuarioRepository.js'
+import UsuarioRepository from '../repositories/usuarioRepository.js'
 import { z } from "zod";
 import Jwt from "jsonwebtoken";
 import Hashsenha from '../util/hashSenha.js';
@@ -42,7 +42,8 @@ class AutenticacaoServices {
   //verifica se existe um usuario com os campos passados
   static VerificarUsuario = async (data) => {
     try {
-      const usuario = await usuarioRepository.findMany({email: data.email})
+      const usuario = await UsuarioRepository.findMany({email: data.email})
+
       if (usuario.length === 0) {
         throw {
           message: "Email Não cadastrado!",
@@ -70,8 +71,9 @@ class AutenticacaoServices {
   static criarToken = async (data) => {
     try {
       const camposValidados = await this.validarCampos(data)
+      
       const usuario = await this.VerificarUsuario(camposValidados)
-    
+
       await this.validarSenhahash(camposValidados.senha, usuario[0].senha)
       const { email, senha } = usuario
       const token = Jwt.sign({ email, senha }, process.env.JWT_SECRET, { expiresIn: '30d' })

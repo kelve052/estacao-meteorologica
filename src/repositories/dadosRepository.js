@@ -1,6 +1,6 @@
 import { prisma } from "../configs/prismaClient.js"
 
-class dadosRepository {
+class DadosRepository {
     static async findMany(filtro) {
         return await prisma.dados_diarios.findMany({ where: filtro });
     }
@@ -18,4 +18,4 @@ class dadosRepository {
     }
 }
 
-export default dadosRepository;
+export default DadosRepository;

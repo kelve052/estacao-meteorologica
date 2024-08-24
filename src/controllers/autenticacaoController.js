@@ -6,6 +6,7 @@ class Autenticacao {
     try {
       const { email, senha } = req.body
       const data = { email, senha }
+      
       const response = await AutenticacaoServices.criarToken(data)
 
       return res.status(201).json({
@@ -16,7 +17,7 @@ class Autenticacao {
         data: null
       })
     } catch (error) {
-      return res.status(error.code).json(error)
+      return res.status(error.code || 500).json(error)
     }
 
   }

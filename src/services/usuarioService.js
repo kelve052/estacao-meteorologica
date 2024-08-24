@@ -1,160 +1,200 @@
 import UsuarioRepository from "../repositories/usuarioRepository.js";
-import { z } from "zod";
 import Hashsenha from "../util/hashSenha.js";
+import { z } from "zod";
 
 class UsuarioService {
-  static async listar(filtro) {
-    try {
-        const filtroSchema = z.object({
-            id: z.preprocess((val) => Number(val), z.number({
-                invalid_type_error: "ID informado não é do tipo number",
-            }).int({
-                message: "ID informado não é um número inteiro"
-            }).positive({
-                message: "ID informado não é positivo"
-            })).optional(),
-            nome: z.string({
-                invalid_type_error: "Nome informado não é do tipo string"
-            }).trim().optional(),
-            email: z.string({
-                invalid_type_error:"O Email tem que ser String"
-            }).email({
-                message:"Email invalido!"
-            }).optional(),
-        });
-        const filtroValidated = filtroSchema.parse(filtro)
-        const response = await UsuarioRepository.findMany(filtroValidated);
-        if (response.length === 0) throw {
-            message: "Nenhum usuário encontrado",
-            code: 404,
-            error: true
-        }
-        return response
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            const errorMessages = error.issues.map((issue) => issue.message);
-            throw {
-                message: errorMessages,
+
+    static async listar(filtro) {
+        try {
+            const filtroSchema = z.object({
+                id: z.preprocess((val) => Number(val), z.number({
+                    invalid_type_error: "Id informado não é do tipo number.",
+                }).int({
+                    message: "Id informado não é um número inteiro."
+                }).positive({
+                    message: "Id informado não é positivo."
+                })).optional(),
+                nome: z.string({
+                    invalid_type_error: "Nome informado não é do tipo string."
+                }).trim().optional(),
+                email: z.string({
+                    invalid_type_error: "Email informado deve ser do tipo string."
+                }).email({
+                    message: "Email invalido."
+                }).optional(),
+            });
+            const filtroValidated = filtroSchema.parse(filtro);
+            const response = await UsuarioRepository.findMany(filtroValidated);
+            response.forEach((e) => delete e.senha);
+            if (response.length === 0) throw {
+                error: true,
                 code: 400,
-                error: true
+                message: "Nenhum usuário encontrado.",
             };
-        } else {
-            throw error;
-        }
-    }
-}
-static async listarPorID(id) {
-    if (!id) {
-      return res.status(404).json([{
-        message: "ID não recebido",
-        code: 404,
-        error: true
-      }])
-    }
-    else {
-      let idusuario = parseInt(id)
-      if (!idusuario) {
-        throw new Error("ID invalido")
-      } else {
-        return await UsuarioRepository.findById(idusuario)
-      }
-    }
-  }
-
-  static async inserir(data) {
-    // Regra de negócio e validações
-    try {
-      const validacao = z.object({
-        nome: z.string({
-          required_error: "Campo Nome É Obrigatório!",
-          invalid_type_error: "O nome tem que ser String"
-        }).min(3, {
-          message: "O Nome Deve Conter Pelo Menos 3 Letras!"
-        }),
-        email: z.string({
-          required_error: "Campo Email É Obrigatório!",
-          invalid_type_error: "O Email Tem Que Ser String"
-        }).email({
-          message: "Email Invalido!"
-        }),
-        senha: z.string({
-          required_error: "Campo Senha É Obrigatório!",
-          invalid_type_error: "O Senha Tem Que Ser String"
-        }).min(8).refine(
-          (value) =>
-            /[a-z]/.test(value) &&  // Tem pelo menos uma letra minúscula
-            /[A-Z]/.test(value) &&  // Tem pelo menos uma letra maiúscula
-            /[0-9]/.test(value) &&  // Tem pelo menos um número
-            /[^a-zA-Z0-9]/.test(value),  // Tem pelo menos um símbolo
-          {
-            message: "A senha deve conter pelo menos uma letra minúscula, uma letra maiúscula, um número e um símbolo.",
-          }
-        )
-      })
-      const usuarioValidated = validacao.required().parse(data)
-
-      //  verificação do email repitido
-      const emailRepetido = await UsuarioRepository.findMany({ email: data.email })
-      console.log(emailRepetido)
-      if (!emailRepetido.length == 0) {
-        throw {
-          message: "Email Já Cadastrado!",
-          code: 400,
-          error: true
-        }
-      }
-
-
-      //  hash senha
-      const hashSenha = await Hashsenha.criarHashSenha(data.senha)
-      usuarioValidated.senha = hashSenha
-
-
-
-
-      const response = await UsuarioRepository.create(usuarioValidated);
-      const userResponse = { //para não exibir a senha do usuário no corpo da resposta
-        id: response.id,
-        nome: response.nome,
-        email: response.email
-      };
-      return userResponse
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const errorMessages = error.issues.map((issue) => issue.message);
-        throw {
-          message: errorMessages,
-          code: 400,
-          error: true
+            return response;
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                const errorMessages = error.issues.map((issue) => {
+                    return {
+                        path: issue.path[0],
+                        message: issue.message
+                    }
+                });
+                throw {
+                    error: true,
+                    code: 400,
+                    message: errorMessages,
+                };
+            } else {
+                throw error;
+            };
         };
-      } else {
-        throw error;
-      }
-    }
+    };
 
+    static async listarPorID(id) {
+        try {
+            const idSchema = z.object({
+                id: z.preprocess((val) => Number(val), z.number({
+                    invalid_type_error: "Id informado não é do tipo number.",
+                }).int({
+                    message: "Id informado não é um número inteiro."
+                }).positive({
+                    message: "Id informado não é positivo."
+                }))
+            });
+            const parsedIdSchema = idSchema.parse(id);
+            const response = await UsuarioRepository.findById(parsedIdSchema.id);
+            if (!response) {
+                throw {
+                    error: true,
+                    code: 400,
+                    message: "Usuário não encontrado.",
+                };
+            };
+            return response;
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                const errorMessages = error.issues.map((issue) => {
+                    return {
+                        path: issue.path[0],
+                        message: issue.message
+                    };
+                });
+                throw {
+                    error: true,
+                    code: 400,
+                    message: errorMessages,
+                };
+            } else {
+                throw error;
+            };
+        };
+    };
 
-  }
-
-    static async atualizar(id, data) {
+    static async inserir(data) {
         try {
             const validacao = z.object({
                 nome: z.string({
-                    required_error: "Campo Nome É Obrigatório!",
-                    invalid_type_error: "O nome tem que ser String"
+                    required_error: "Campo nome é obrigatório.",
+                    invalid_type_error: "Nome deve ser do tipo string."
                 }).min(3, {
-                    message: "O Nome Deve Conter Pelo Menos 3 Letras!"
+                    message: "Nome deve conter pelo menos 3 letras."
                 }),
                 email: z.string({
-                    required_error: "Campo Email É Obrigatório!",
-                    invalid_type_error: "O Email Tem Que Ser String"
+                    required_error: "Campo email é obrigatório.",
+                    invalid_type_error: "Email deve ser do tipo string."
                 }).email({
-                    message: "Email Invalido!"
+                    message: "Email invalido."
                 }),
                 senha: z.string({
-                    required_error: "Campo Senha É Obrigatório!",
-                    invalid_type_error: "O Senha Tem Que Ser String"
+                    required_error: "Campo senha é obrigatório.",
+                    invalid_type_error: "Senha deve ser do tipo string."
+                }).min(8).refine(
+                    (value) =>
+                        /[a-z]/.test(value) &&  // Tem pelo menos uma letra minúscula
+                        /[A-Z]/.test(value) &&  // Tem pelo menos uma letra maiúscula
+                        /[0-9]/.test(value) &&  // Tem pelo menos um número
+                        /[^a-zA-Z0-9]/.test(value),  // Tem pelo menos um símbolo
+                    {
+                        message: "A senha deve conter pelo menos uma letra minúscula, uma letra maiúscula, um número e um símbolo.",
+                    }
+                )
+            });
+            const usuarioValidated = validacao.parse(data);
+            //  verificação do email repetido
+            const emailRepetido = await UsuarioRepository.findMany({ email: data.email });
+            if (emailRepetido.length > 0) {
+                throw {
+                    error: true,
+                    code: 400,
+                    message: "Email já cadastrado.",
+                };
+            };
+            //  hash senha
+            const hashSenha = await Hashsenha.criarHashSenha(data.senha);
+            usuarioValidated.senha = hashSenha;
+            const response = await UsuarioRepository.create(usuarioValidated);
+            const userResponse = { //para não exibir a senha do usuário no corpo da resposta
+                id: response.id,
+                nome: response.nome,
+                email: response.email
+            };
+            return userResponse;
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                const errorMessages = error.issues.map((issue) => {
+                    return {
+                        path: issue.path[0],
+                        message: issue.message
+                    };
+                });
+                throw {
+                    error: true,
+                    code: 400,
+                    message: errorMessages,
+                };
+            } else {
+                throw error;
+            };
+        };
+    };
+
+    static async atualizar(id, data) {
+        try {
+            const idSchema = z.object({
+                id: z.preprocess((val) => Number(val), z.number({
+                    invalid_type_error: "Id informado não é do tipo number.",
+                }).int({
+                    message: "Id informado não é um número inteiro."
+                }).positive({
+                    message: "Id informado não é positivo."
+                }))
+            });
+            const parsedIdSchema = idSchema.parse(id);
+            const usuario = await UsuarioRepository.findById(parsedIdSchema.id);
+            if (!usuario) throw {
+                error: true,
+                code: 400,
+                message: "Usuário não encontrado.",
+            };
+            const validacao = z.object({
+                nome: z.string({
+                    // required_error: "Campo Nome É Obrigatório!",
+                    invalid_type_error: "Nome deve ser uma string."
+                }).min(3, {
+                    message: "Nome deve conter pelo menos 3 letras."
+                }).optional(),
+                email: z.string({
+                    // required_error: "Campo Email É Obrigatório!",
+                    invalid_type_error: "Email deve ser string."
+                }).email({
+                    message: "Email invalido."
+                }).optional(),
+                senha: z.string({
+                    // required_error: "Campo Senha É Obrigatório!",
+                    invalid_type_error: "Senha deve ser string."
                 }).min(8, {
-                    message: "A senha deve conter pelo menos 8 caracteres, uma letra minúscula, uma letra maiúscula, um número e um símbolo.",
+                    message: "Senha deve conter pelo menos 8 caracteres, uma letra minúscula, uma letra maiúscula, um número e um símbolo.",
                 }).refine(
                     (value) =>
                         /[a-z]/.test(value) &&  // Tem pelo menos uma letra minúscula
@@ -162,64 +202,100 @@ static async listarPorID(id) {
                         /[0-9]/.test(value) &&  // Tem pelo menos um número
                         /[^a-zA-Z0-9]/.test(value),  // Tem pelo menos um símbolo
                     {
-                        message: "A senha deve conter pelo menos 8 caracteres, uma letra minúscula, uma letra maiúscula, um número e um símbolo.",
+                        message: "Senha deve conter pelo menos 8 caracteres, uma letra minúscula, uma letra maiúscula, um número e um símbolo.",
                     }
-                )
-            })
-
-            const usuarioValidated = validacao.parse(data)
-
-            //  hash senha
-            const hashSenha = await Hashsenha.criarHashSenha(data.senha)
-            usuarioValidated.senha = hashSenha
-
-            //  verificação do email repitido
-            const emailRepetido = await UsuarioRepository.findMany({ email: data.email })
-
-            if (!emailRepetido) {
-                if (id != emailRepetido.id) {
-                    throw {
-                        message: "Email Já Cadastrado!",
-                        code: 400,
-                        error: true
-                    }
-                }
-
+                ).optional()
+            });
+            const usuarioValidated = validacao.parse(data);
+            if (usuarioValidated.senha != undefined) {
+                //  hash senha
+                const hashSenha = await Hashsenha.criarHashSenha(data.senha);
+                usuarioValidated.senha = hashSenha;
             }
+            if (usuarioValidated.email != undefined) {
+                //  verificação do email repitido
+                const emailRepetido = await UsuarioRepository.findMany({ email: data.email });
 
-            return await UsuarioRepository.update(id, usuarioValidated);
-
+                if (!emailRepetido) {
+                    if (id != emailRepetido.id) {
+                        throw {
+                            error: true,
+                            code: 400,
+                            message: "Email já cadastrado.",
+                        };
+                    };
+                };
+            };
+            const response = await UsuarioRepository.update(parsedIdSchema.id, usuarioValidated);
+            delete response.senha;
+            return response;
         } catch (error) {
             if (error instanceof z.ZodError) {
-                const errorMessages = error.issues.map((issue) => issue.message);
-                console.log(errorMessages)
+                const errorMessages = error.issues.map((issue) => {
+                    return {
+                        path: issue.path[0],
+                        message: issue.message
+                    }
+                });
                 throw {
-                    message: errorMessages,
+                    error: true,
                     code: 400,
-                    error: true
+                    message: errorMessages,
                 };
             } else {
-                throw {
-                    message: error.message,
-                    code: 400,
-                    error: true
-                };
-            }
-        }
-
-    }
+                throw error;
+            };
+        };
+    };
 
     static async deletar(id) {
-        const usuario = await UsuarioRepository.findMany({ id: id })
-        if (!usuario[0]) {
-            throw {
-                code: 400,
-                message: `Não existe usuário com este id: ${id}`,
-                error: true
-            }
-        }
-        return await UsuarioRepository.delete({ id: id });
-    }
-}
+        try {
+            const idSchema = z.object({
+                id: z.preprocess((val) => Number(val), z.number({
+                    invalid_type_error: "Id informado não é do tipo number.",
+                }).int({
+                    message: "Id informado não é um número inteiro."
+                }).positive({
+                    message: "Id informado não é positivo."
+                }))
+            });
+            const parsedIdSchema = idSchema.parse(id);
+            const usuario = await UsuarioRepository.findById(parsedIdSchema.id);
+            if (!usuario) {
+                throw {
+                    error: true,
+                    code: 400,
+                    message: "Usuário não encontrado.",
+                };
+            };
+            const response = await UsuarioRepository.delete(parsedIdSchema.id);
+            if (!response) {
+                throw {
+                    error: true,
+                    code: 400,
+                    message: "Erro interno, não foi possível deletar este usuário.",
+                };
+            };
+            delete response.senha;
+            return response;
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                const errorMessages = error.issues.map((issue) => {
+                    return {
+                        path: issue.path[0],
+                        message: issue.message
+                    };
+                });
+                throw {
+                    error: true,
+                    code: 400,
+                    message: errorMessages,
+                };
+            } else {
+                throw error;
+            };
+        };
+    };
+};
 
 export default UsuarioService;
