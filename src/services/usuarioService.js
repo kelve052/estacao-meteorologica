@@ -24,8 +24,8 @@ class UsuarioService {
                 }).optional(),
             });
             const filtroValidated = filtroSchema.parse(filtro)
-
             const response = await UsuarioRepository.findMany(filtroValidated);
+            response.forEach((e) => delete e.senha);
             if (response.length === 0) throw {
                 message: "Nenhum usuário encontrado",
                 code: 400,
@@ -34,7 +34,51 @@ class UsuarioService {
             return response
         } catch (error) {
             if (error instanceof z.ZodError) {
-                const errorMessages = error.issues.map((issue) => issue.message);
+                const errorMessages = error.issues.map((issue) => {
+                    return {
+                        path: issue.path[0],
+                        message: issue.message
+                    }
+                });
+                throw {
+                    message: errorMessages,
+                    code: 400,
+                    error: true
+                };
+            } else {
+                throw error
+            }
+        }
+    }
+    static async listarPorID(id) {
+        try {
+            const idSchema = z.object({
+                id: z.preprocess((val) => Number(val), z.number({
+                    invalid_type_error: "ID informado não é do tipo number",
+                }).int({
+                    message: "ID informado não é um número inteiro"
+                }).positive({
+                    message: "ID informado não é positivo"
+                }))
+            })
+            const parsedIdSchema = idSchema.parse(id)
+            const response = await UsuarioRepository.findById(parsedIdSchema.id)
+            if (!response) {
+                throw {
+                    message: "Usuário não encontrado.",
+                    code: 400,
+                    error: true
+                }
+            }
+            return response;
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                const errorMessages = error.issues.map((issue) => {
+                    return {
+                        path: issue.path[0],
+                        message: issue.message
+                    }
+                });
                 throw {
                     message: errorMessages,
                     code: 400,
@@ -42,23 +86,6 @@ class UsuarioService {
                 };
             } else {
                 throw error;
-            }
-        }
-    }
-    static async listarPorID(id) {
-        if (!id) {
-            return res.status(404).json([{
-                message: "ID não recebido",
-                code: 404,
-                error: true
-            }])
-        }
-        else {
-            let idusuario = parseInt(id)
-            if (!idusuario) {
-                throw new Error("ID invalido")
-            } else {
-                return await UsuarioRepository.findById(idusuario)
             }
         }
     }
@@ -94,9 +121,10 @@ class UsuarioService {
             })
             const usuarioValidated = validacao.parse(data)
 
-            //  verificação do email repitido
+            //  verificação do email repetido
             const emailRepetido = await UsuarioRepository.findMany({ email: data.email })
-            if (emailRepetido) {
+
+            if (emailRepetido.length > 0) {
                 throw {
                     message: "Email Já Cadastrado!",
                     code: 400,
@@ -117,21 +145,38 @@ class UsuarioService {
             return userResponse
         } catch (error) {
             if (error instanceof z.ZodError) {
-                const errorMessages = error.issues.map((issue) => issue.message);
+                const errorMessages = error.issues.map((issue) => {
+                    return {
+                        path: issue.path,
+                        message: issue.message
+                    }
+                });
                 throw {
                     message: errorMessages,
                     code: 400,
                     error: true
                 };
             } else {
-                throw error;
+                throw error
             }
         }
     }
 
     static async atualizar(id, data) {
-        console.log(data)
         try {
+
+            const parsedId = parseInt(id);
+
+            const usuario = await UsuarioRepository.findById(parsedId);
+
+            if (!usuario) {
+                throw {
+                    message: "Usuário não encontrado!",
+                    code: 400,
+                    error: true
+                }
+            }
+
             const validacao = z.object({
                 nome: z.string({
                     // required_error: "Campo Nome É Obrigatório!",
@@ -185,45 +230,80 @@ class UsuarioService {
                 }
             }
 
+            const response = await UsuarioRepository.update(id, usuarioValidated);
 
+            delete response.senha
 
-            return await UsuarioRepository.update(id, usuarioValidated);
+            return response
 
         } catch (error) {
             if (error instanceof z.ZodError) {
                 const errorMessages = error.issues.map((issue) => {
                     return {
-                        message: issue.message,
-                        path: issue.path
+                        path: issue.path,
+                        message: issue.message
                     }
                 });
-                console.log(errorMessages)
                 throw {
                     message: errorMessages,
                     code: 400,
                     error: true
                 };
             } else {
-                throw {
-                    message: error.message,
-                    code: 400,
-                    error: true
-                };
+                throw error
             }
         }
 
     }
 
     static async deletar(id) {
-        const usuario = await UsuarioRepository.findMany({ id: id })
-        if (!usuario[0]) {
-            throw {
-                code: 400,
-                message: `Não existe usuário com este id: ${id}`,
-                error: true
+        try {
+            const idSchema = z.object({
+                id: z.preprocess((val) => Number(val), z.number({
+                    invalid_type_error: "ID informado não é do tipo number",
+                }).int({
+                    message: "ID informado não é um número inteiro"
+                }).positive({
+                    message: "ID informado não é positivo"
+                }))
+            })
+            const parsedIdSchema = idSchema.parse(id)
+            const usuario = await UsuarioRepository.findById(parsedIdSchema.id)
+            console.log(usuario)
+            if (!usuario) {
+                throw {
+                    code: 400,
+                    message: `Usuário não encontrado!`,
+                    error: true
+                }
+            }
+            const response = await UsuarioRepository.delete(parsedIdSchema.id);
+            if (!response) {
+                throw {
+                    code: 400,
+                    message: `Erro interno, não foi possível deletar este usuário.`,
+                    error: true
+                }
+            }
+            delete response.senha;
+            return response;
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                const errorMessages = error.issues.map((issue) => {
+                    return {
+                        path: issue.path[0],
+                        message: issue.message
+                    }
+                });
+                throw {
+                    message: errorMessages,
+                    code: 400,
+                    error: true
+                };
+            } else {
+                throw error
             }
         }
-        return await UsuarioRepository.delete({ id: id });
     }
 }
 

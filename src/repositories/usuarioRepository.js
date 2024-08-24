@@ -38,7 +38,7 @@ class UsuarioRepository {
     }
 
     static async delete(id) {
-        return await prisma.usuario.delete({ where: id });
+        return await prisma.usuario.delete({ where: { id: id } });
     }
 }
 

@@ -42,16 +42,16 @@ async function seed() {
     // Insere novos dados na tabela `dados_diarios`
     await prisma.dados_diarios.createMany({
         data: [
-            { id: 1, temperature: "25.3", humidity: "60", rainfall: "5", wind_speed_kmh: 12, data_hora: new Date() },
-            { id: 2, temperature: "26.7", humidity: "65", rainfall: "4", wind_speed_kmh: 14, data_hora: new Date() },
-            { id: 3, temperature: "24.1", humidity: "58", rainfall: "3", wind_speed_kmh: 10, data_hora: new Date() },
-            { id: 4, temperature: "27.4", humidity: "70", rainfall: "6", wind_speed_kmh: 16, data_hora: new Date() },
-            { id: 5, temperature: "23.9", humidity: "55", rainfall: "2", wind_speed_kmh: 8, data_hora: new Date() },
-            { id: 6, temperature: "28.2", humidity: "72", rainfall: "6", wind_speed_kmh: 18, data_hora: new Date() },
-            { id: 7, temperature: "22.8", humidity: "50", rainfall: "2", wind_speed_kmh: 6, data_hora: new Date() },
-            { id: 8, temperature: "29.0", humidity: "75", rainfall: "7", wind_speed_kmh: 20, data_hora: new Date() },
-            { id: 9, temperature: "21.5", humidity: "48", rainfall: "2", wind_speed_kmh: 4, data_hora: new Date() },
-            { id: 10, temperature: "30.3", humidity: "78", rainfall: "8", wind_speed_kmh: 22, data_hora: new Date() },
+            { id: 1, temperature: "25.3", humidity: 60, rainfall: 5, wind_speed_kmh: 12, data_hora: new Date() },
+            { id: 2, temperature: "26.7", humidity: 65, rainfall: 4, wind_speed_kmh: 14, data_hora: new Date() },
+            { id: 3, temperature: "24.1", humidity: 58, rainfall: 3, wind_speed_kmh: 10, data_hora: new Date() },
+            { id: 4, temperature: "27.4", humidity: 70, rainfall: 6, wind_speed_kmh: 16, data_hora: new Date() },
+            { id: 5, temperature: "23.9", humidity: 55, rainfall: 2, wind_speed_kmh: 8, data_hora: new Date() },
+            { id: 6, temperature: "28.2", humidity: 72, rainfall: 6, wind_speed_kmh: 18, data_hora: new Date() },
+            { id: 7, temperature: "22.8", humidity: 50, rainfall: 2, wind_speed_kmh: 6, data_hora: new Date() },
+            { id: 8, temperature: "29.0", humidity: 75, rainfall: 7, wind_speed_kmh: 20, data_hora: new Date() },
+            { id: 9, temperature: "21.5", humidity: 48, rainfall: 2, wind_speed_kmh: 4, data_hora: new Date() },
+            { id: 10, temperature: "30.3", humidity: 78, rainfall: 8, wind_speed_kmh: 22, data_hora: new Date() },
         ],
     });
 
