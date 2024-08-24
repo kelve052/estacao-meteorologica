@@ -2,20 +2,17 @@ import { prisma } from "../configs/prismaClient.js"
 
 class UsuarioRepository {
     static async findMany(filtros) {
-        try {
-            return await prisma.usuario.findMany({
-                where: filtros,
-                select: {
-                    id: true,
-                    nome: true,
-                    email: true,
-                    senha: true
-                }
-            });
-        } catch (error) {
-            throw error
-        }
-    }
+        return await prisma.usuario.findMany({
+            where: filtros,
+            select: {
+                id: true,
+                nome: true,
+                email: true,
+                senha: true
+            }
+        });
+    };
+
     static async findById(id) {
         return await prisma.usuario.findUnique({
             where: { id: id },
@@ -26,20 +23,19 @@ class UsuarioRepository {
                 senha: false
             }
         });
-    }
+    };
 
     static async create(data) {
         return await prisma.usuario.create({ data: data });
-    }
+    };
 
     static async update(id, data) {
-        const novId = parseInt(id)
-        return await prisma.usuario.update({ where: { id: novId }, data: data });
-    }
+        return await prisma.usuario.update({ where: { id: id }, data: data });
+    };
 
     static async delete(id) {
         return await prisma.usuario.delete({ where: { id: id } });
-    }
-}
+    };
+};
 
 export default UsuarioRepository;
