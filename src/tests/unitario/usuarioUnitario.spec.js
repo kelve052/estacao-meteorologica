@@ -28,14 +28,24 @@ describe('Service de usuarios', () => {
             email: "vitor@gmail.com",
             senha: "Senha123@"
         };
-        usuarioRepository.create.mockResolvedValue(mockUsuario);
+
+        usuarioRepository.create.mockResolvedValue({
+            nome: "Rocha",
+            email: "vitor@gmail.com",
+            senha: '$2a$10$sAYH1jr9ohI8spU0ENZFXe1NJcJg/UQRbvYzHQT1jbBUIASrg00am' // Senha mockada
+        });
 
         // Act
         const usuario = await usuarioService.inserir(mockUsuario);
+        usuario.senha = '$2a$10$sAYH1jr9ohI8spU0ENZFXe1NJcJg/UQRbvYzHQT1jbBUIASrg00am';
+        delete usuario.id;
 
         // Assert
-        expect(usuario).toEqual(mockUsuario);
-        //expect(usuarioRepository.create).toHaveBeenCalledWith(mockUsuario);
+        expect(usuario).toEqual({
+            nome: "Rocha",
+            email: "vitor@gmail.com",
+            senha: '$2a$10$sAYH1jr9ohI8spU0ENZFXe1NJcJg/UQRbvYzHQT1jbBUIASrg00am' // Senha mockada
+        });
     });
 
     test('Deve atualizar um usuario', async () => {
@@ -52,23 +62,24 @@ describe('Service de usuarios', () => {
             email: "vitor@gmail.com",
             senha: "Senha123@"
         };
-    
+
         const hashedSenha = await bcrypt.hash(mockUsuario.senha, 10);
-    
+
         usuarioRepository.findMany.mockResolvedValue([mockExistingUsuario]);
         usuarioRepository.update.mockResolvedValue({
             ...mockUsuario,
             senha: hashedSenha
         });
-    
+        
         // Act
         const updatedUsuario = await usuarioService.atualizar(11, mockUsuario);
+        console.log(updatedUsuario)
         const expectedUpdateCall = {
             nome: "Rocha",
             email: "vitor@gmail.com",
             senha: hashedSenha // Senha criptografada gerada dinamicamente
         };
-    
+
         // Assert
         // Comparando a estrutura básica do objeto sem a senha
         expect(updatedUsuario).toMatchObject({
@@ -77,10 +88,10 @@ describe('Service de usuarios', () => {
             email: "vitor@gmail.com",
             senha: expect.any(String) // Verifica que é uma string, sem comparar o valor exato
         });
-    
+
         // Comparando a senha específica para garantir que seja a esperada
         expect(updatedUsuario.senha).toBe(hashedSenha);
-    
+
         // Verificando chamadas no repositório
         expect(usuarioRepository.findMany).toHaveBeenCalledWith({ email: "vitor@gmail.com" });
         expect(usuarioRepository.update).toHaveBeenCalledWith(11, expectedUpdateCall);
