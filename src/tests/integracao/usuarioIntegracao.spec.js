@@ -5,6 +5,7 @@ import app from "../../app.js";
 // Apenas para teste depois irei refatorar
 // ---------------- Login ----------------
 let token;
+let idvalido;
 
 it('Login com autenticação jwt', async () => {
     const response = await request(app)
@@ -24,24 +25,24 @@ describe("Listar usuarios", () => {
 
     it('Deve retornar sucesso a listagem de usuarios', async () => {
         const response = await request(app)
-            .get("/usuario")
+            .get("/usuarios")
             .set("Authorization", `Bearer ${token}`)
             .set("Content-Type", "application/json")
         const body = response.body;
-        idvalido = response.body[0].id;
+        idvalido = response.body.data[0].id;
         //deve retornar status 200
         expect(response.status).toBe(200);
         //deve retornar erro falso
         expect({ error: false }).toHaveProperty('error', false);
         //testando se o corpo da requisição é um array
-        expect(body).toBeInstanceOf(Array);
+        expect(body).toBeInstanceOf(Object);
         //testando se retorna json
         expect(response.headers['content-type']).toContain('json');
     });
 
     it('Deve retornar sucesso ao listar usuario com ID valido', async () => {
         const response = await request(app)
-            .get(`/usuario/${idvalido}`)
+            .get(`/usuarios/${idvalido}`)
             .set("Authorization", `Bearer ${token}`)
             .set("Content-Type", "application/json")
         const body = response.body;
@@ -52,14 +53,14 @@ describe("Listar usuarios", () => {
         //deve retornar erro falso
         expect({ error: false }).toHaveProperty('error', false);
         //testando se o corpo da requisição é um array
-        expect(body).toBeInstanceOf(Array);
+        expect(body).toBeInstanceOf(Object);
         //testando se retorna json
         expect(response.headers['content-type']).toContain('json');
     });
     it('Deve retornar sucesso ao listar usuario com ID invalido', async () => {
         const idinvalido = "9999";
         const response = await request(app)
-            .get(`/usuario/${idinvalido}`)
+            .get(`/usuarios/${idinvalido}`)
             .set("Authorization", `Bearer ${token}`)
             .set("Content-Type", "application/json")
         //testando se retorna o motivo do erro
@@ -76,21 +77,21 @@ describe("Listar usuarios", () => {
 // ----------- Deletar Usuário ---------
 
 describe("Deletar usuario", () => {
-    it('deve deletar a estação com id valido', async () => {
+    it('deve deletar usuário com id valido', async () => {
         const id = 10;
         const response = await request(app)
-            .delete(`/usuario/${id}`)
+            .delete(`/usuarios/${id}`)
             .set("Authorization", `Bearer ${token}`)
             .set("Content-Type", "application/json")
         //testando a resposta
-        expect(response.status).toBe(204);
+        expect(response.status).toBe(200);
         // //testando se o erro é falso
         expect({ error: false }).toHaveProperty('error', false);
     })
     it('deve retornar erro com o id invalido', async () => {
         const id = 64;
         const response = await request(app)
-            .delete(`/usuario/${id}`)
+            .delete(`/usuarios/${id}`)
             .set("Authorization", `Bearer ${token}`)
             .set("Content-Type", "application/json")
         //testando a resposta

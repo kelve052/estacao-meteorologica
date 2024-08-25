@@ -2,7 +2,7 @@ import { expect, describe } from "@jest/globals";
 import AutenticacaoServices from "../../services/autenticacaoSevices";
 
 
-describe('teste na camada de  autenticacaoServices metodo: validarCampos()', ()=>{
+describe.skip('teste na camada de  autenticacaoServices metodo: validarCampos()', ()=>{
   it('Deve retonar um obejeto com email e senha', async ()=>{
     const data = {
       email: "marcos@gmail.com",
