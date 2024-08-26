@@ -18,7 +18,7 @@ class dadosService {
                     invalid_type_error: "Velocidade do vento informada não é do tipo int."
                 }).optional(),
                 data_hora: z.date({
-                    invalid_type_error: "Data informada não é do tipo string"
+                    invalid_type_error: "Data informada não é do tipo string/data"
                 }).optional(),
             });
             const filtroValidated = filtroSchema.parse(filtro)

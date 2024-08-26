@@ -23,7 +23,7 @@ class Estacao {
         data: response,
         error: false,
         code: 200,
-        message: response.length > 1 ? "Estações encontradas com sucesso." : "Estação encontrado com sucesso.",
+        message: response.length > 1 ? "Estações encontradas com sucesso." : "Estação encontrada com sucesso.",
       });
     } catch (error) {
       return res.status(error.code || 500).json(error);

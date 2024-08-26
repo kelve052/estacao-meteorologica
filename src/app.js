@@ -5,11 +5,14 @@ import cors from "cors"; // permite o fornt-end usar essa api (resumindo)
 
 const app = express();
 
-app.use(cors());
-// app.use(cors([
-//   { origin: ['http://edurondon.tplinkdns.com:3030', 'http://edurondon.tplinkdns.com:3031', 'http://localhost:3030', 'http://localhost:3031'] },
-//   { methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'] }
-// ])); //  Mude apenas isso: origin: ['http://www.section.io', 'http://www.google.com/']
+
+app.use(cors({
+    origin: '*', // Permitir requisições da aplicação rodando em localhost:3000
+    methods: ['GET', 'POST', 'PUT', 'PATCH','DELETE', 'OPTIONS'], // Métodos permitidos
+    allowedHeaders: ['Content-Type', 'Authorization', "application/json"], // Cabeçalhos permitidos
+    credentials: true // Permitir envio de cookies ou headers de autenticação
+}));
+
 
 app.use(express.json());
 routes(app);
