@@ -120,8 +120,8 @@ describe("Cadastrar usuario", () => {
             });
 
         expect(response.status).toBe(201);
-    expect({message:"usuario cadastrado com sucesso!"}).toHaveProperty('message',"usuario cadastrado com sucesso!");
-    expect({error:false}).toHaveProperty('error',false);
+        expect({ message: "usuario cadastrado com sucesso!" }).toHaveProperty('message', "usuario cadastrado com sucesso!");
+        expect({ error: false }).toHaveProperty('error', false);
     });
 
     it('Deve retornar erro ao cadastrar um usuario com a senha com os parametros errados', async () => {
@@ -136,9 +136,9 @@ describe("Cadastrar usuario", () => {
             });
 
         expect(response.status).toBe(400);
-        expect({message:"A senha deve conter pelo menos uma letra minúscula, uma letra maiúscula, um número e um símbolo."}).toHaveProperty('message',"A senha deve conter pelo menos uma letra minúscula, uma letra maiúscula, um número e um símbolo.");
-        expect({error:true}).toHaveProperty('error',true);
-        
+        expect({ message: "A senha deve conter pelo menos uma letra minúscula, uma letra maiúscula, um número e um símbolo." }).toHaveProperty('message', "A senha deve conter pelo menos uma letra minúscula, uma letra maiúscula, um número e um símbolo.");
+        expect({ error: true }).toHaveProperty('error', true);
+
 
     });
 
@@ -154,8 +154,8 @@ describe("Cadastrar usuario", () => {
             });
 
         expect(response.status).toBe(400);
-        expect({message:"Email Já Cadastrado!"}).toHaveProperty('message',"Email Já Cadastrado!");
-         expect({error:true}).toHaveProperty('error',true);
+        expect({ message: "Email Já Cadastrado!" }).toHaveProperty('message', "Email Já Cadastrado!");
+        expect({ error: true }).toHaveProperty('error', true);
     });
 })
 
@@ -164,46 +164,46 @@ describe("Cadastrar usuario", () => {
 
 describe("Atualizar usuario", () => {
     it('Atualização dos dados de um usuario valido', async () => {
-        const id= 1;
+        const id = 1;
         const updatedData = {
             nome: "usuario Atualizado",
             email: "vitorgabriel123@gmail.com",
             senha: "Senhaa123@"
         }
-        
+
         const response = await request(app)
             .patch(`/usuario/${id}`)
             .set("Authorization", `Bearer ${token}`)
             .send(updatedData);
-        
+
         expect(response.status).toBe(200);
         expect(response.headers["content-type"]).toContain('json');
         expect(response.body.message).toMatch("Usuario atualizado com sucesso!!!");
         expect(response.body.data).toHaveProperty('nome', updatedData.nome);
         expect(response.body.data).toHaveProperty('email', updatedData.email);
-        expect({error:false}).toHaveProperty('error',false);
-        })
+        expect({ error: false }).toHaveProperty('error', false);
+    })
 
     it('Deve retornar erro ao atualizar um usuario com a senha com os parametros errados', async () => {
-        const id= 1;    
+        const id = 1;
         const response = await request(app)
             .patch(`/usuario/${id}`)
-                .set("Authorization", `Bearer ${token}`)
-                .set("Content-Type", "application/json")
-                .send({
-                    nome: "usuario Atualizado 2.0",
-                    email: "vitorgabriel12@gmail.com",
-                    senha: "Senhaa123"
-                });
-    
-            expect(response.status).toBe(400);
-            expect({message:"A senha deve conter pelo menos uma letra minúscula, uma letra maiúscula, um número e um símbolo."}).toHaveProperty('message',"A senha deve conter pelo menos uma letra minúscula, uma letra maiúscula, um número e um símbolo.");
-            expect({error:true}).toHaveProperty('error',true);     
-                
-        });
-    
+            .set("Authorization", `Bearer ${token}`)
+            .set("Content-Type", "application/json")
+            .send({
+                nome: "usuario Atualizado 2.0",
+                email: "vitorgabriel12@gmail.com",
+                senha: "Senhaa123"
+            });
+
+        expect(response.status).toBe(400);
+        expect({ message: "A senha deve conter pelo menos uma letra minúscula, uma letra maiúscula, um número e um símbolo." }).toHaveProperty('message', "A senha deve conter pelo menos uma letra minúscula, uma letra maiúscula, um número e um símbolo.");
+        expect({ error: true }).toHaveProperty('error', true);
+
+    });
+
     it('Deve retornar erro ao atualizar um usuario com o email repetido', async () => {
-        const id= 1;
+        const id = 1;
         const response = await request(app)
             .patch(`/usuario/${id}`)
             .set("Authorization", `Bearer ${token}`)
@@ -215,7 +215,7 @@ describe("Atualizar usuario", () => {
             });
 
         expect(response.status).toBe(400);
-        expect({message:"Email Já Cadastrado!"}).toHaveProperty('message',"Email Já Cadastrado!");
-            expect({error:true}).toHaveProperty('error',true);
+        expect({ message: "Email Já Cadastrado!" }).toHaveProperty('message', "Email Já Cadastrado!");
+        expect({ error: true }).toHaveProperty('error', true);
     });
 });
