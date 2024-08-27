@@ -1,93 +1,258 @@
 import { describe, expect, test } from '@jest/globals';
-import estacaoService from '../../services/estacaoService.js';
-import estacaoRepository from '../../repositories/estacaoRepository.js';
+import EstacaoService from '../../services/estacaoService.js';
+import EstacaoRepository from '../../repositories/estacaoRepository.js';
+import UsuarioRepository from '../../repositories/usuarioRepository.js';
 
 jest.mock('../../repositories/estacaoRepository.js', () => ({
     findMany: jest.fn(),
+    findById: jest.fn(),
     create: jest.fn(),
     update: jest.fn()
 }));
 
+jest.mock('../../repositories/usuarioRepository.js', () => ({
+    findById: jest.fn()
+}));
 
+describe('EstacaoService.listar', () => {
+    const estacoesMock = [
+        {
+            id: 1,
+            nome: 'Estação Teste 1',
+            endereco: 'Rua Teste 1, 123',
+            latitude: -23.550520,
+            longitude: -46.633308,
+            ip: '192.168.0.1',
+            status: 'ativo',
+            usuario_id: 1
+        },
+        {
+            id: 2,
+            nome: 'Estação Teste 2',
+            endereco: 'Rua Teste 2, 456',
+            latitude: -23.551520,
+            longitude: -46.634308,
+            ip: '192.168.0.2',
+            status: 'inativo',
+            usuario_id: 2
+        }
+    ];
 
-describe('Service de estações', () => {
+    const filtroValido = { status: 'ativo' };
+    const filtroInvalido = { latitude: 'inválido' };
+
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    test('Deve listar as estações', async () => {
-        // Arrange
-        const mockEstacoes = [
-            { id: 1, nome: 'Estação Central', endereco: 'Rua 1, Centro', longitude: -23.5505, latitude: -46.6333, ip: '192.168.0.1', status: 'ativo', usuario_id: 1 },
-            { id: 2, nome: 'Estação Norte', endereco: 'Rua 2, Norte', longitude: -23.5510, latitude: -46.6340, ip: '192.168.0.2', status: 'ativo', usuario_id: 2 },
-        ];
+    it('Deve listar estações com base no filtro válido.', async () => {
+        EstacaoRepository.findMany.mockResolvedValue(estacoesMock);
 
-        estacaoRepository.findMany.mockResolvedValue(mockEstacoes);
+        const resultado = await EstacaoService.listar(filtroValido);
 
-        // Act
-        const estacoes = await estacaoService.listar({});
-
-        // Assert
-
-        expect(estacoes).toEqual(mockEstacoes);
-        expect(estacaoRepository.findMany).toHaveBeenCalledWith({});
+        expect(EstacaoRepository.findMany).toHaveBeenCalledWith(filtroValido);
+        expect(resultado).toEqual(estacoesMock);
     });
 
-    test('Deve criar uma nova estação', async () => {
-        // Arrange
-        const mockEstacao = {
-            nome: "Estação Onze",
-            endereco: "Rua 11",
-            latitude: -45.535,
-            longitude: -25.658,
-            ip: "192.168.0.11",
-            status: "ativo",
-            usuario_id: 3
-        };
-        estacaoRepository.create.mockResolvedValue(mockEstacao);
+    it('Deve lançar erro se nenhum resultado for encontrado.', async () => {
+        EstacaoRepository.findMany.mockResolvedValue([]);
 
-        // Act
-        const estacao = await estacaoService.inserir(mockEstacao);
+        await expect(EstacaoService.listar(filtroValido))
+            .rejects
+            .toEqual({
+                error: true,
+                code: 400,
+                message: "Nenhuma estação encontrada.",
+            });
 
-        // Assert
-        expect(estacao).toEqual(mockEstacao);
-        expect(estacaoRepository.create).toHaveBeenCalledWith(mockEstacao);
+        expect(EstacaoRepository.findMany).toHaveBeenCalledWith(filtroValido);
     });
 
-    test('Deve atualizar uma estação', async () => {
-        // Arrange
-        const mockEstacao = {
-            id: 11,
-            nome: "Estação Atualizada",
-            endereco: "Rua Atualizada",
-            latitude: -45.535,
-            longitude: -25.658,
-            ip: "192.168.0.12",
-            status: "ativo",
-            usuario_id: 3
+    it('Deve lançar erro de validação para filtros inválidos.', async () => {
+        await expect(EstacaoService.listar(filtroInvalido))
+            .rejects
+            .toEqual(expect.objectContaining({
+                error: true,
+                code: 400,
+            }));
+
+        expect(EstacaoRepository.findMany).not.toHaveBeenCalled();
+    });
+
+    it('Deve lidar com outros erros e lançar erro', async () => {
+        EstacaoRepository.findMany.mockRejectedValue(new Error('Erro desconhecido'));
+
+        await expect(EstacaoService.listar(filtroValido))
+            .rejects
+            .toThrow('Erro desconhecido');
+
+        expect(EstacaoRepository.findMany).toHaveBeenCalledWith(filtroValido);
+    });
+});
+
+describe('EstacaoService.inserir', () => {
+    const estacaoValida = {
+        nome: 'Estação Teste',
+        endereco: 'Rua Teste, 123',
+        latitude: -23.550520,
+        longitude: -46.633308,
+        ip: '192.168.0.1',
+        status: 'ativo',
+        usuario_id: 1
+    };
+
+    const usuarioValido = { id: 1, nome: 'Usuário Teste' };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('Deve inserir uma estação com dados válidos.', async () => {
+        UsuarioRepository.findById.mockResolvedValue(usuarioValido);
+        EstacaoRepository.create.mockResolvedValue(estacaoValida);
+
+        const resultado = await EstacaoService.inserir(estacaoValida);
+
+        expect(UsuarioRepository.findById).toHaveBeenCalledWith(estacaoValida.usuario_id);
+        expect(EstacaoRepository.create).toHaveBeenCalledWith(estacaoValida);
+        expect(resultado).toEqual(estacaoValida);
+    });
+
+    it('Deve lançar erro se o usuário não for encontrado.', async () => {
+        UsuarioRepository.findById.mockResolvedValue(null);
+
+        await expect(EstacaoService.inserir(estacaoValida))
+            .rejects
+            .toEqual({
+                error: true,
+                code: 400,
+                message: "Usuário não encontrado.",
+            });
+
+        expect(UsuarioRepository.findById).toHaveBeenCalledWith(estacaoValida.usuario_id);
+        expect(EstacaoRepository.create).not.toHaveBeenCalled();
+    });
+
+    it('Deve lançar erro de validação para dados inválidos.', async () => {
+        const dadosInvalidos = {
+            nome: 'Estação Teste',
+            endereco: 'Rua Teste, 123',
+            latitude: 'inválido',  // Valor inválido
+            longitude: -46.633308,
+            ip: '192.168.0.1',
+            status: 'ativo',
+            usuario_id: 1
         };
-        const mockExistingEstacao = {
-            id: 11,
-            nome: "Estação Teste",
-            endereco: "Rua Teste",
-            latitude: -45.125,
-            longitude: -25.612,
-            ip: "192.168.0.12",
-            status: "ativo",
-            usuario_id: 3
+
+        await expect(EstacaoService.inserir(dadosInvalidos))
+            .rejects
+            .toEqual(expect.objectContaining({
+                error: true,
+                code: 400,
+            }));
+
+        expect(UsuarioRepository.findById).not.toHaveBeenCalled();
+        expect(EstacaoRepository.create).not.toHaveBeenCalled();
+    });
+
+    it('Deve lançar erro ao tentar inserir uma estação e falhar.', async () => {
+        UsuarioRepository.findById.mockResolvedValue(usuarioValido);
+        EstacaoRepository.create.mockResolvedValue(null);
+
+        await expect(EstacaoService.inserir(estacaoValida))
+            .rejects
+            .toEqual({
+                error: true,
+                code: 400,
+                message: "Erro ao cadastrar estação.",
+            });
+
+        expect(UsuarioRepository.findById).toHaveBeenCalledWith(estacaoValida.usuario_id);
+        expect(EstacaoRepository.create).toHaveBeenCalledWith(estacaoValida);
+    });
+});
+
+describe('EstacaoService.atualizar', () => {
+    const mockEstacao = {
+        id: 1,
+        nome: 'Estação Teste',
+        endereco: 'Rua Teste, 123',
+        latitude: -23.550520,
+        longitude: -46.633308,
+        ip: '192.168.0.1',
+        status: 'ativo',
+        usuario_id: 1
+    };
+
+    const idValido = 1;
+    const dadosAtualizados = {
+        nome: 'Novo Nome',
+        latitude: -23.555555,
+        longitude: -46.666666
+    };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('Deve atualizar uma estação com sucesso.', async () => {
+        EstacaoRepository.findById.mockResolvedValue(mockEstacao);
+        EstacaoRepository.update.mockResolvedValue({
+            ...mockEstacao,
+            ...dadosAtualizados
+        });
+
+        const resultado = await EstacaoService.atualizar({ id: idValido }, dadosAtualizados);
+
+        expect(EstacaoRepository.findById).toHaveBeenCalledWith(idValido);
+        expect(EstacaoRepository.update).toHaveBeenCalledWith(idValido, expect.objectContaining(dadosAtualizados));
+        expect(resultado).toEqual(expect.objectContaining(dadosAtualizados));
+    });
+
+    it('Deve lançar erro se a estação não for encontrada.', async () => {
+        EstacaoRepository.findById.mockResolvedValue(null);
+
+        await expect(EstacaoService.atualizar({ id: idValido }, dadosAtualizados))
+            .rejects
+            .toEqual({
+                error: true,
+                code: 400,
+                message: "Estação não encontrado.",
+            });
+
+        expect(EstacaoRepository.findById).toHaveBeenCalledWith(idValido);
+        expect(EstacaoRepository.update).not.toHaveBeenCalled();
+    });
+
+    it('Deve lançar erro de validação para dados inválidos.', async () => {
+        const dadosInvalidos = {
+            latitude: 'invalido',
         };
 
-        estacaoRepository.findMany.mockResolvedValue([mockExistingEstacao]);
-        estacaoRepository.update.mockResolvedValue(mockEstacao);
+        await expect(EstacaoService.atualizar(idValido, dadosInvalidos))
+            .rejects
+            .toEqual(expect.objectContaining({
+                error: true,
+                code: 400,
+            }));
 
-        // Act
-        const updatedEstacao = await estacaoService.atualizar(11, mockEstacao);
-        const expectedUpdateCall = { ...mockEstacao };
-        delete expectedUpdateCall.id;
+        expect(EstacaoRepository.findById).not.toHaveBeenCalled();
+        expect(EstacaoRepository.update).not.toHaveBeenCalled();
+    });
 
-        // Assert
-        expect(updatedEstacao).toEqual(mockEstacao);
-        expect(estacaoRepository.findMany).toHaveBeenCalledWith({id: 11});
-        expect(estacaoRepository.update).toHaveBeenCalledWith(11, expectedUpdateCall);
+    it('Deve lançar erro ao não conseguir atualizar a estação.', async () => {
+        EstacaoRepository.findById.mockResolvedValue(mockEstacao);
+        EstacaoRepository.update.mockResolvedValue(null);
+
+        await expect(EstacaoService.atualizar({ id: idValido }, dadosAtualizados))
+            .rejects
+            .toEqual({
+                error: true,
+                code: 400,
+                message: "Não foi possível atualizar estação.",
+            });
+
+        expect(EstacaoRepository.findById).toHaveBeenCalledWith(idValido);
+        expect(EstacaoRepository.update).toHaveBeenCalledWith(idValido, expect.objectContaining(dadosAtualizados));
     });
 });

@@ -122,7 +122,7 @@ class UsuarioService {
             });
             const usuarioValidated = validacao.parse(data);
             //  verificação do email repetido
-            const emailRepetido = await UsuarioRepository.findMany({ email: data.email });
+            const emailRepetido = await UsuarioRepository.findMany({ email: data.email }) || [];
             if (emailRepetido.length > 0) {
                 throw {
                     error: true,
