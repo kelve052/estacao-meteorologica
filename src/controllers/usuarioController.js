@@ -35,11 +35,11 @@ class Usuario {
 
   static deletar = async (req, res) => {
     try {
-      const id = { id: req.params.id };
+      const id = { id: req.params.idUser };
       await UsuarioService.deletar(id);
-      return res.status(200).json({
+      return res.status(204).json({
         error: false,
-        code: 200,
+        code: 204,
         message: "Usuario deletado com sucesso.",
       });
     } catch (error) {

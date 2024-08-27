@@ -4,7 +4,7 @@
 const usuarioAtualizar = {
 
   // Rota para Atualizar um usuário
-  "/usuario/{id}/": {
+  "/usuarios/{id}/": {
     patch: {
       tags: ["Usuario"],
       summary: "Atuáliza um usuário",

@@ -3,15 +3,16 @@ import { z } from "zod";
 
 class dadosService {
     static async listar(filtro) {
+        console.log(filtro)
         try {
             const filtroSchema = z.object({
                 temperature: z.string({
                     invalid_type_error: "Temperatura informada não é do tipo string."
                 }).optional(),
-                humidity: z.string({
+                humidity: z.number({
                     invalid_type_error: "Umidade informada não é do tipo int."
                 }).optional(),
-                rainfall: z.string({
+                rainfall: z.number({
                     invalid_type_error: "Pluviosidade informada não é do tipo int."
                 }).optional(),
                 wind_speed_kmh: z.number({
