@@ -1,7 +1,7 @@
 const usuarioDeletar = {
 
   //Delete
-  "/usuario/{idUser}": {
+  "/usuarios/{idUser}": {
     delete: {
       tags: ["Usuario"],
       summary: "Detela um usuário pelo id",
@@ -23,10 +23,24 @@ const usuarioDeletar = {
             "application/json": {
               schema: {
                 type: "object",
+                properties: {
+                  error: {
+                    type: "boolean",
+                    example: false
+                  },
+                  code: {
+                    type: "integer",
+                    example: 204
+                  },
+                  message: {
+                    type: "string",
+                    example: "Usuario deletado com sucesso."
+                  }
+                }
               }
             }
           }
-        },
+        },        
         400: {
           content: {
             "application/json": {

@@ -69,6 +69,31 @@ class EstacaoService {
         };
     };
 
+    static async listarPorID(id) {
+        if (!id) {
+          return res.status(404).json([{
+            message: "ID não recebido",
+            code: 404,
+            error: true
+          }])
+        }
+        else {
+          let idestacao = parseInt(id)
+          if (!idestacao) {
+            throw new Error("ID invalido")
+          } else {
+            const response =  await EstacaoRepository.findById(idestacao)
+            if(!response){
+              throw {message: "ID não pertence a uma estação!"}
+            }
+            return response
+    
+          }
+        }
+      }
+    
+    
+
     static async inserir(data) {
         try {
             const estacaoSchema = z.object({
@@ -143,6 +168,15 @@ class EstacaoService {
     };
 
     static async atualizar(id, data) {
+        const usuario = await UsuarioRepository.findById(data.usuario_id)
+        console.log(usuario)
+        if(!usuario){
+            throw {
+                error: true,
+                code: 400,
+                message: "Id do usuário inexistente!"
+            }
+        }
         try {
             const idSchema = z.object({
                 id: z.preprocess((val) => Number(val), z.number({
@@ -192,6 +226,8 @@ class EstacaoService {
             });
             const estacaoAtualizadaValidated = estacaoAtualizadaSchema.parse(data);
             const response = await EstacaoRepository.update(parsedIdSchema.id, estacaoAtualizadaValidated);
+            console.log(parsedIdSchema)
+            console.log(estacaoAtualizadaValidated)
             if (!response) throw {
                 error: true,
                 code: 400,
@@ -212,7 +248,11 @@ class EstacaoService {
                     message: errorMessages,
                 };
             } else {
-                throw error;
+                throw {
+                    error: true,
+                    code: 400,
+                    message: error.message
+                }
             };
         };
     };

@@ -4,7 +4,7 @@
 const usuarioCadastrar = {
 
   // Rota para cadastrar um usuário
-  "/usuario ": {
+  "/usuarios ": {
     post: {
       tags: ["Usuario"],
       summary: "Cadastra um usuário",

@@ -1,7 +1,7 @@
 const usuarioListarId = {
 
   //getId
-  "/usuario/{id}": {
+  "/usuarios/{id}": {
     get: {
       tags: ["Usuario"],
       summary: "Lista o usuário pelo ID",

@@ -31,25 +31,25 @@ class Estacao {
   };
 
   // GET por ID - listar Usuario por ID 
-  // static listarPorId = async (req, res) => {
-  //   try {
-  //     const id = { id: req.query.id };
-  //     const response = await EstacaoService.listarPorID(id)
-  //     res.status(200).json({
-  //       data: response,
-  //       error: false,
-  //       code: 200,
-  //       message: "Estação encontrada com sucesso"
-  //     })
-  //   } catch (error) {
-  //     return res.status(error.code || 500).json(error);
-  //   }
-  // }
+  static listarPorId = async (req, res) => {
+    try {
+      const id = req.params.id;
+      const response = await EstacaoService.listarPorID(id)
+      res.status(200).json({
+        data: response,
+        error: false,
+        code: 200,
+        message: "Estação encontrada com sucesso"
+      })
+    } catch (error) {
+      return res.status(error.code || 500).json(error);
+    }
+  }
 
   static atualizar = async (req, res) => {
     try {
       const id = { id: req.params.id };
-      const { nome, endereco, latitude, longitude, ip, status, usuario_id, dados_diarios } = req.body;
+      const { nome, endereco, latitude, longitude, ip, status, usuario_id } = req.body;
       const data = {
         nome: nome,
         endereco: endereco,
@@ -58,7 +58,6 @@ class Estacao {
         ip: ip,
         status: status,
         usuario_id: usuario_id,
-        dados_diarios: dados_diarios,
       };
       const response = await EstacaoService.atualizar(id, data);
       res.status(200).json({

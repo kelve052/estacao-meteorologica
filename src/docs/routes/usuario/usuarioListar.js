@@ -1,7 +1,7 @@
 const usuarioListar = {
 
   //get
-  "/usuario": {
+  "/usuarios": {
     get: {
       tags: ["Usuario"],
       summary: "Lista todos os usuários cadastrados",
