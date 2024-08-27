@@ -2,7 +2,10 @@ import { jest, describe, it, expect, afterEach } from '@jest/globals';
 import DadosRepository from '../../repositories/dadosRepository.js';
 import dadosService from '../../services/dadosService.js';
 
-jest.mock('../../repositories/dadosRepository.js');
+jest.mock('../../repositories/dadosRepository.js', () => ({
+    findMany: jest.fn(),
+    create: jest.fn(),
+}));
 
 describe('Testes de Unidade para dadosService', () => {
     

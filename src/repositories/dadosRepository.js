@@ -8,14 +8,6 @@ class DadosRepository {
     static async create(data) {
         return await prisma.dados_diarios.create({ data: data });
     }
-
-    static async update(id, data) {
-        return await prisma.dados_diarios.update({ where: { id }, data });
-    }
-
-    static async delete(id) {
-        return await prisma.dados_diarios.delete({ where: { id } });
-    }
 }
 
 export default DadosRepository;
