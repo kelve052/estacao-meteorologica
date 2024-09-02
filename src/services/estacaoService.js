@@ -70,29 +70,44 @@ class EstacaoService {
     };
 
     static async listarPorID(id) {
-        if (!id) {
-          return res.status(404).json([{
-            message: "ID não recebido",
-            code: 404,
-            error: true
-          }])
-        }
-        else {
-          let idestacao = parseInt(id)
-          if (!idestacao) {
-            throw new Error("ID invalido")
-          } else {
-            const response =  await EstacaoRepository.findById(idestacao)
-            if(!response){
-              throw {message: "ID não pertence a uma estação!"}
-            }
-            return response
-    
-          }
-        }
-      }
-    
-    
+        try {
+            const idSchema = z.object({
+                id: z.preprocess((val) => Number(val), z.number({
+                    invalid_type_error: "Id informado não é do tipo number.",
+                }).int({
+                    message: "Id informado não é um número inteiro."
+                }).positive({
+                    message: "Id informado não é positivo."
+                }))
+            });
+            const parsedIdSchema = idSchema.parse(id);
+            const response = await EstacaoRepository.findById(parsedIdSchema.id);
+            if (!response) {
+                throw {
+                    error: true,
+                    code: 400,
+                    message: "Estação não encontrada.",
+                };
+            };
+            return response;
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                const errorMessages = error.issues.map((issue) => {
+                    return {
+                        path: issue.path[0],
+                        message: issue.message
+                    };
+                });
+                throw {
+                    error: true,
+                    code: 400,
+                    message: errorMessages,
+                };
+            } else {
+                throw error;
+            };
+        };
+    };
 
     static async inserir(data) {
         try {
@@ -168,15 +183,6 @@ class EstacaoService {
     };
 
     static async atualizar(id, data) {
-        const usuario = await UsuarioRepository.findById(data.usuario_id)
-        console.log(usuario)
-        if(!usuario){
-            throw {
-                error: true,
-                code: 400,
-                message: "Id do usuário inexistente!"
-            }
-        }
         try {
             const idSchema = z.object({
                 id: z.preprocess((val) => Number(val), z.number({
@@ -226,8 +232,6 @@ class EstacaoService {
             });
             const estacaoAtualizadaValidated = estacaoAtualizadaSchema.parse(data);
             const response = await EstacaoRepository.update(parsedIdSchema.id, estacaoAtualizadaValidated);
-            console.log(parsedIdSchema)
-            console.log(estacaoAtualizadaValidated)
             if (!response) throw {
                 error: true,
                 code: 400,
@@ -248,11 +252,7 @@ class EstacaoService {
                     message: errorMessages,
                 };
             } else {
-                throw {
-                    error: true,
-                    code: 400,
-                    message: error.message
-                }
+                throw error;
             };
         };
     };

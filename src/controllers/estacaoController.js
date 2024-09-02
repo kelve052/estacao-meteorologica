@@ -33,7 +33,7 @@ class Estacao {
   // GET por ID - listar Usuario por ID 
   static listarPorId = async (req, res) => {
     try {
-      const id = req.params.id;
+      const id = { id: req.params.id };
       const response = await EstacaoService.listarPorID(id)
       res.status(200).json({
         data: response,
